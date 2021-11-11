@@ -2,6 +2,9 @@ package com.sbitbd.fixedbd.ui.seller_form.ui.dashboard;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.TimeZone;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,6 +33,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 import com.sbitbd.fixedbd.Config.DoConfig;
@@ -46,8 +52,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -58,7 +66,7 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private FragmentDashboardBinding binding;
     private MaterialCardView add_card, back_card, all_pro, active_pro, inactive_pro, log_card, withdraw1,
-            withdraw2, withdraw3, withdraw4, withdraw5,Withdraw6;
+            withdraw2, withdraw3, withdraw4, withdraw5, Withdraw6;
     private MaterialTextView seller_name, all_count, active_count, inacitve_count, seller_name2, seller_name1;
     private ImageView seller_pro_img;
     private List<String> stringList = new ArrayList<>();
@@ -67,7 +75,8 @@ public class DashboardFragment extends Fragment {
     private ProgressDialog progressDialog;
     private String seller_id;
     private View root1;
-    private double accounts, amount, withdraw,sale_bal,commission_with,deposit_bal_with;
+    private int datecheck = 0;
+    private double accounts, amount, withdraw, sale_bal, commission_with, deposit_bal_with;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -222,22 +231,22 @@ public class DashboardFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type.getText().toString().equals("")){
+                if (type.getText().toString().equals("")) {
                     type.setError("Empty Type");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Type", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (account.getText().toString().equals("")){
+                if (account.getText().toString().equals("")) {
                     account.setError("Empty Account");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Account", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (tran.getText().toString().equals("")){
+                if (tran.getText().toString().equals("")) {
                     tran.setError("Empty Transaction ID");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Transaction ID", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (amount.getText().toString().equals("")){
+                if (amount.getText().toString().equals("")) {
                     amount.setError("Empty Amount");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Amount", Toast.LENGTH_SHORT).show();
                     return;
@@ -288,23 +297,23 @@ public class DashboardFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type.getText().toString().equals("")){
+                if (type.getText().toString().equals("")) {
                     type.setError("Empty Type");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Type", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (account.getText().toString().equals("")){
+                if (account.getText().toString().equals("")) {
                     account.setError("Empty Account");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Account", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!amount.getText().toString().trim().equals("")){
+                if (!amount.getText().toString().trim().equals("")) {
                     if (Double.parseDouble(amount.getText().toString().trim()) > accounts) {
                         amount.setError("Your balance:" + accounts);
                         Toast.makeText(root1.getContext().getApplicationContext(), "Your balance:" + accounts, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }else
+                } else
                     return;
                 progressDialog = ProgressDialog.show(root1.getContext(), "", "Loading...", false, false);
                 String sql = "INSERT INTO `addfunds`(`date`, `member_id`, `customer_id`, `type`, " +
@@ -325,9 +334,9 @@ public class DashboardFragment extends Fragment {
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
                         getCharge("select sum(amount) as 'id' from addfunds WHERE member_id " +
                                 "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "' " +
-                                "and status = '1'",0);
+                                "and status = '1'", 0);
                         getCharge("select sum(withdraw) as 'id' from addfunds WHERE member_id " +
-                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",1);
+                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 1);
                     }
                 });
             }
@@ -357,23 +366,23 @@ public class DashboardFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type.getText().toString().equals("")){
+                if (type.getText().toString().equals("")) {
                     type.setError("Empty Type");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Type", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (account.getText().toString().equals("")){
+                if (account.getText().toString().equals("")) {
                     account.setError("Empty Account");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Account", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!amount.getText().toString().trim().equals("")){
+                if (!amount.getText().toString().trim().equals("")) {
                     if (Double.parseDouble(amount.getText().toString().trim()) > sale_bal) {
                         amount.setError("Your balance:" + sale_bal);
                         Toast.makeText(root1.getContext().getApplicationContext(), "Your balance:" + sale_bal, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }else
+                } else
                     return;
                 progressDialog = ProgressDialog.show(root1.getContext(), "", "Loading...", false, false);
                 String sql = "INSERT INTO `member_product_balance`(`date`, `member_id`, `type`, " +
@@ -392,7 +401,7 @@ public class DashboardFragment extends Fragment {
                         } else
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
                         getCharge("select sum(amount - withdraw) as 'id' from member_product_balance where member_id " +
-                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",2);
+                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 2);
                     }
                 });
             }
@@ -423,23 +432,23 @@ public class DashboardFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type.getText().toString().equals("")){
+                if (type.getText().toString().equals("")) {
                     type.setError("Empty Type");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Type", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (account.getText().toString().equals("")){
+                if (account.getText().toString().equals("")) {
                     account.setError("Empty Account");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Account", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!amount.getText().toString().trim().equals("")){
+                if (!amount.getText().toString().trim().equals("")) {
                     if (Double.parseDouble(amount.getText().toString().trim()) > commission_with) {
                         amount.setError("Your balance:" + commission_with);
                         Toast.makeText(root1.getContext().getApplicationContext(), "Your balance:" + commission_with, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }else
+                } else
                     return;
                 progressDialog = ProgressDialog.show(root1.getContext(), "", "Loading...", false, false);
                 String sql = "INSERT INTO `order_customer_commision`(`date`, `member_id`, `type`, " +
@@ -458,7 +467,7 @@ public class DashboardFragment extends Fragment {
                         } else
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
                         getCharge("select sum(commision_balance - withdraw) as 'id' from order_customer_commision where member_id " +
-                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",3);
+                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 3);
                     }
                 });
             }
@@ -490,23 +499,23 @@ public class DashboardFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type.getText().toString().equals("")){
+                if (type.getText().toString().equals("")) {
                     type.setError("Empty Type");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Type", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (account.getText().toString().equals("")){
+                if (account.getText().toString().equals("")) {
                     account.setError("Empty Account");
                     Toast.makeText(root1.getContext().getApplicationContext(), "Empty Account", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!amount.getText().toString().trim().equals("")){
+                if (!amount.getText().toString().trim().equals("")) {
                     if (Double.parseDouble(amount.getText().toString().trim()) > deposit_bal_with) {
                         amount.setError("Your balance:" + deposit_bal_with);
                         Toast.makeText(root1.getContext().getApplicationContext(), "Your balance:" + deposit_bal_with, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }else
+                } else
                     return;
                 progressDialog = ProgressDialog.show(root1.getContext(), "", "Loading...", false, false);
                 String sql = "INSERT INTO `Deposit_amount`(`date`, `member_id`, `type`, " +
@@ -525,7 +534,7 @@ public class DashboardFragment extends Fragment {
                         } else
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
                         getCharge("select sum(deposit_amount - withdraw) as 'id' from Deposit_amount where member_id " +
-                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",4);
+                                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 4);
                     }
                 });
             }
@@ -680,12 +689,11 @@ public class DashboardFragment extends Fragment {
                                 else if (check == 1) {
                                     withdraw = Double.parseDouble(response.trim());
                                     accounts = amount - withdraw;
-                                }else if (check == 2){
+                                } else if (check == 2) {
                                     sale_bal = Double.parseDouble(response.trim());
-                                }
-                                else if (check == 3){
+                                } else if (check == 3) {
                                     commission_with = Double.parseDouble(response.trim());
-                                }else if (check == 4){
+                                } else if (check == 4) {
                                     deposit_bal_with = Double.parseDouble(response.trim());
                                 }
                             }
@@ -726,26 +734,65 @@ public class DashboardFragment extends Fragment {
         MaterialCardView end_card = bottomSheetDialog.findViewById(R.id.end_date1);
         TextView start_date = bottomSheetDialog.findViewById(R.id.date_t);
         TextView end_date = bottomSheetDialog.findViewById(R.id.date_t1);
+
+
+        MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
+        materialDateBuilder.setTitleText("SELECT A DATE");
+        materialDateBuilder.setTheme(R.style.RoundShapeCalenderTheme);
+
+        final MaterialDatePicker<Long> materialDatePicker = materialDateBuilder.build();
+
+        start_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                materialDatePicker.show(getChildFragmentManager(), "MATERIAL_DATE_PICKER");
+                datecheck = 1;
+            }
+        });
+        end_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                materialDatePicker.show(getChildFragmentManager(), "MATERIAL_DATE_PICKER");
+                datecheck = 2;
+            }
+        });
+        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                String date;
+                // It will be negative, so that's the -1
+                int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date1 = new Date(selection + offsetFromUTC);
+                date = simpleFormat.format(date1);
+                if (datecheck == 1)
+                    start_date.setText(date);
+                else
+                    end_date.setText(date);
+            }
+        });
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (title.getText().toString().trim().equals("")){
+                if (title.getText().toString().trim().equals("")) {
                     Toast.makeText(root1.getContext(), "Empty Title!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (title.getText().toString().length() > 50){
+                if (title.getText().toString().length() > 50) {
                     Toast.makeText(root1.getContext(), "Too long title!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (description.getText().toString().trim().equals("")){
+                if (description.getText().toString().trim().equals("")) {
                     Toast.makeText(root1.getContext(), "Empty Description!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (start_date.getText().toString().trim().equals("Start Date")){
+                if (start_date.getText().toString().trim().equals("Start Date")) {
                     Toast.makeText(root1.getContext(), "Select a date", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (end_date.getText().toString().trim().equals("End Date")){
+                if (end_date.getText().toString().trim().equals("End Date")) {
                     Toast.makeText(root1.getContext(), "Select a date", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -763,7 +810,6 @@ public class DashboardFragment extends Fragment {
                         } else
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
 
-
                     }
                 });
             }
@@ -779,14 +825,14 @@ public class DashboardFragment extends Fragment {
         seller_name_img(root1);
         getCharge("select sum(amount) as 'id' from addfunds WHERE member_id " +
                 "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "' " +
-                "and status = '1'",0);
+                "and status = '1'", 0);
         getCharge("select sum(withdraw) as 'id' from addfunds WHERE member_id " +
-                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",1);
+                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 1);
         getCharge("select sum(amount - withdraw) as 'id' from member_product_balance where member_id " +
-                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",2);
+                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 2);
         getCharge("select sum(commision_balance - withdraw) as 'id' from order_customer_commision where member_id " +
-                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",3);
+                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 3);
         getCharge("select sum(deposit_amount - withdraw) as 'id' from Deposit_amount where member_id " +
-                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'",4);
+                "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 4);
     }
 }

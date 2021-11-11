@@ -35,10 +35,11 @@ public class service extends JobService {
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Get pure product by trusted fixed bd..."))
                 .setAutoCancel(false)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_PROMO)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL);
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         notificationManager.notify(1, builder.build());
@@ -59,8 +60,8 @@ public class service extends JobService {
                     e.printStackTrace();
                 }
             }
-            Log.d(TAG,"job finished");
-            jobFinished(parameters,true);
+//            Log.d(TAG,"job finished");
+//            jobFinished(parameters,false);
         }).start();
     }
 

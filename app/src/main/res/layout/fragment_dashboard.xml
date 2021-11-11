@@ -772,7 +772,7 @@
                     android:id="@+id/imageView20"
                     android:layout_width="100dp"
                     android:layout_height="0dp"
-                    android:src="@drawable/ic_vault_amico"
+                    android:src="@drawable/ic_push_notifications_rafiki"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -782,7 +782,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:background="#00000000"
                     android:fontFamily="serif"
                     android:text="@string/notification_settings"
