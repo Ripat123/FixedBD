@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edittext"
-            android:inputType="numberDecimal"
+            android:inputType="text"
             android:selectAllOnFocus="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edittext"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:selectAllOnFocus="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
