@@ -719,12 +719,55 @@ public class DashboardFragment extends Fragment {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(root1.getContext(), R.style.CustomBottomSheetDialog);
         bottomSheetDialog.setDismissWithAnimation(true);
         bottomSheetDialog.setContentView(R.layout.notification_lay);
-//        Button submit = bottomSheetDialog.findViewById(R.id.add_fnd_btn);
-//        AutoCompleteTextView type = bottomSheetDialog.findViewById(R.id.type);
-//        EditText amount = bottomSheetDialog.findViewById(R.id.amount);
-//        EditText account = bottomSheetDialog.findViewById(R.id.account);
-//        EditText det = bottomSheetDialog.findViewById(R.id.det);
+        Button submit = bottomSheetDialog.findViewById(R.id.add_fnd_btn);
+        EditText title = bottomSheetDialog.findViewById(R.id.amount);
+        EditText description = bottomSheetDialog.findViewById(R.id.account);
+        MaterialCardView start_card = bottomSheetDialog.findViewById(R.id.start_date);
+        MaterialCardView end_card = bottomSheetDialog.findViewById(R.id.end_date1);
+        TextView start_date = bottomSheetDialog.findViewById(R.id.date_t);
+        TextView end_date = bottomSheetDialog.findViewById(R.id.date_t1);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (title.getText().toString().trim().equals("")){
+                    Toast.makeText(root1.getContext(), "Empty Title!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (title.getText().toString().length() > 50){
+                    Toast.makeText(root1.getContext(), "Too long title!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (description.getText().toString().trim().equals("")){
+                    Toast.makeText(root1.getContext(), "Empty Description!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (start_date.getText().toString().trim().equals("Start Date")){
+                    Toast.makeText(root1.getContext(), "Select a date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (end_date.getText().toString().trim().equals("End Date")){
+                    Toast.makeText(root1.getContext(), "Select a date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                progressDialog = ProgressDialog.show(root1.getContext(), "", "Loading...", false, false);
+                String sql = "INSERT INTO `notification`(`title`, `description`, `start_date`,`end_date`) VALUES(" +
+                        "'" + title.getText().toString().trim() + "','" + description.getText().toString().trim() + "'" +
+                        ",'" + start_date.getText().toString() + "','" + end_date.getText().toString().trim() + "')";
+                dashboardViewModel.getData_insert(sql).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        progressDialog.dismiss();
+                        if (aBoolean) {
+                            bottomSheetDialog.dismiss();
+                            Toast.makeText(root1.getContext().getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
 
+
+                    }
+                });
+            }
+        });
 
         bottomSheetDialog.show();
     }
