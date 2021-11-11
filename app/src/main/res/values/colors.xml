@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="normDark">#292929</color>
+    <color name="color_title">#292929</color>
+    <color name="appbar_day">#FFD8E5</color>
+    <color name="appbar_night">#F2303030</color>
+    <color name="main_color">#498057</color>
+    <color name="deep_main">#3E7E4F</color>
+    <color name="main_over_lay">#33498057</color>
+    <color name="cart_color">#009688</color>
+    <color name="divider_color">#CDCDCD</color>
+    <color name="order_state">#00BCD4</color>
+    <color name="off_state">#D5D5D5</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="footer">#FF8500</color>
+    <color name="stock_green">#23AA29</color>
+    <color name="proccess">#36A2F5</color>
+    <color name="ontheway">#EAC459</color>
+    <color name="success">#34BFA3</color>
+    <color name="reject">#FF518A</color>
+    <color name="red">#FF0000</color>
+    <color name="overlay">#72FFFFFF</color>
+    <color name="screen">#00FFFFFF</color>
+
+</resources>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cart_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/wish_image"
+                android:layout_width="55dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/wish_pro_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/rubik_medium"
+                android:text="Inspiron 15"
+                app:layout_constraintEnd_toStartOf="@+id/top_del_btn"
+                app:layout_constraintStart_toEndOf="@+id/wish_image"
+                app:layout_constraintTop_toTopOf="@+id/wish_image" />
+
+
+            <TextView
+                android:id="@+id/wish_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rubik_medium"
+                android:text="500"
+                android:textColor="@color/main_color"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/wish_image"
+                app:layout_constraintStart_toStartOf="@+id/wish_pro_name" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_cart_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="16dp"
+                app:cornerRadius="20dp"
+                app:icon="@drawable/ic_round_shopping_cart_24"
+                app:iconGravity="top"
+                app:iconTint="@color/main_color"
+                app:layout_constraintBottom_toBottomOf="@+id/wish_price"
+                app:layout_constraintStart_toEndOf="@+id/wish_price"
+                app:layout_constraintTop_toTopOf="@+id/wish_price" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/top_del_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="5dp"
+                app:cornerRadius="20dp"
+                app:icon="@drawable/ic_baseline_delete_24"
+                app:iconGravity="top"
+                app:iconTint="@color/main_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

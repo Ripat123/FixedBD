@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.invoice">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/logoimg"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/finallogo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/top_t1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/our_back_office"
+                app:layout_constraintEnd_toEndOf="@+id/logoimg"
+                app:layout_constraintStart_toStartOf="@+id/logoimg"
+                app:layout_constraintTop_toBottomOf="@+id/logoimg" />
+
+            <TextView
+                android:id="@+id/top_t2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trunk_road_feni"
+                app:layout_constraintEnd_toEndOf="@+id/logoimg"
+                app:layout_constraintStart_toStartOf="@+id/logoimg"
+                app:layout_constraintTop_toBottomOf="@+id/top_t1" />
+
+            <TextView
+                android:id="@+id/top_t3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/invoice_num"
+                app:layout_constraintEnd_toEndOf="@+id/logoimg"
+                app:layout_constraintStart_toStartOf="@+id/logoimg"
+                app:layout_constraintTop_toBottomOf="@+id/top_t2" />
+
+            <TextView
+                android:id="@+id/top_t4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/first_email"
+                app:layout_constraintEnd_toEndOf="@+id/logoimg"
+                app:layout_constraintStart_toStartOf="@+id/logoimg"
+                app:layout_constraintTop_toBottomOf="@+id/top_t3" />
+
+            <TextView
+                android:id="@+id/top_t5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/second_email"
+                app:layout_constraintEnd_toEndOf="@+id/logoimg"
+                app:layout_constraintStart_toStartOf="@+id/logoimg"
+                app:layout_constraintTop_toBottomOf="@+id/top_t4" />
+
+            <View
+                android:id="@+id/in_border"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/divider_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_t5" />
+
+            <TextView
+                android:id="@+id/invoice_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/invoice_id"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/in_border" />
+
+            <TextView
+                android:id="@+id/invoice_id_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/invoice_id"
+                app:layout_constraintBottom_toBottomOf="@+id/invoice_id"
+                app:layout_constraintStart_toEndOf="@+id/invoice_id"
+                app:layout_constraintTop_toTopOf="@+id/invoice_id" />
+
+            <TextView
+                android:id="@+id/order_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/order_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/invoice_id" />
+
+            <TextView
+                android:id="@+id/order_date_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rubik"
+                android:layout_marginStart="2dp"
+                android:text="@string/invoice_id"
+                app:layout_constraintBottom_toBottomOf="@+id/order_date"
+                app:layout_constraintStart_toEndOf="@+id/order_date"
+                app:layout_constraintTop_toTopOf="@+id/order_date" />
+
+            <TextView
+                android:id="@+id/payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/payment_type"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/order_date" />
+
+            <TextView
+                android:id="@+id/payment_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/invoice_id"
+                app:layout_constraintBottom_toBottomOf="@+id/payment"
+                app:layout_constraintStart_toEndOf="@+id/payment"
+                app:layout_constraintTop_toTopOf="@+id/payment" />
+
+            <TextView
+                android:id="@+id/del"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/del_d"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/payment" />
+
+            <TextView
+                android:id="@+id/del_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:fontFamily="@font/rubik"
+                android:text="@string/invoice_id"
+                app:layout_constraintBottom_toBottomOf="@+id/del"
+                app:layout_constraintStart_toEndOf="@+id/del"
+                app:layout_constraintTop_toTopOf="@+id/del" />
+            <View
+                android:id="@+id/in_border1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/divider_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/del" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/inv_pro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/in_border1">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <View
+                android:id="@+id/in_border2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/divider_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/inv_pro" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/total_intxtid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/rubik_bold"
+                android:text="@string/total"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/in_border2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/total_inid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/rubik"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/total_intxtid"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/total_intxtid"
+                app:layout_constraintTop_toTopOf="@+id/total_intxtid" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dis_intxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/rubik_bold"
+                android:text="@string/discount"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="@+id/total_intxtid"
+                app:layout_constraintTop_toBottomOf="@+id/total_intxtid" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dis_inid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/rubik"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/dis_intxt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/dis_intxt"
+                app:layout_constraintTop_toTopOf="@+id/dis_intxt" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/delivery_intxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/rubik_bold"
+                android:text="@string/delivery"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="@+id/dis_intxt"
+                app:layout_constraintTop_toBottomOf="@+id/dis_intxt" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/delivery_inid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/rubik"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/delivery_intxt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/delivery_intxt"
+                app:layout_constraintTop_toTopOf="@+id/delivery_intxt" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/grand_intxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/rubik_bold"
+                android:text="@string/grand"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="@+id/delivery_intxt"
+                app:layout_constraintTop_toBottomOf="@+id/delivery_intxt" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/grand_inid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/rubik"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/grand_intxt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/grand_intxt"
+                app:layout_constraintTop_toTopOf="@+id/grand_intxt" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/go_to_shopping"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/grand_intxt" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/nb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/screen"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shop_btn" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

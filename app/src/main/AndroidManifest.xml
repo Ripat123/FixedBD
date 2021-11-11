@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sbitbd.fixedbd">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/buynfeel"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/buynfeel"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Ecommerce"
+        android:usesCleartextTraffic="true">
+        <activity android:name="com.sbitbd.fixedbd.ui.seller_form.ui.pro_view.product_view1"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name="com.sbitbd.fixedbd.ui.seller_form.ui.product_add.product_form"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.seller_form.seller_nav"
+            android:label="@string/title_activity_seller_nav"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.seller_reg.seller_reg"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.seller_login.seller_login"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.forget.forget_code"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ImageSlider.ImageFullview"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_image_fullview"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.invoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.category.all_category"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.flash_screen"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.track_order.order_info"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.checkout.checkout"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.edit_profile.edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.verify.verfication"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.search"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.product_descripton"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.wish_list.wish"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.product_by_cond.product_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.sh_cart.sh_cart"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.create_admin.admin"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.ui.login_page.ui.login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity
+            android:name="com.sbitbd.fixedbd.MainActivity"
+            android:icon="@mipmap/buynfeel"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+
+        <service android:name=".Config.service"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+    </application>
+
+</manifest>

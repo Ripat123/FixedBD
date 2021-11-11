@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_round_home_24"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_round_airport_shuttle_24"
+            android:title="@string/menu_gallery" />
+        <item
+            android:id="@+id/nav_product"
+            android:icon="@drawable/ic_round_new_releases_24"
+            android:title="@string/new_pro" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_round_account_circle_24"
+            android:title="@string/menu_slideshow" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/icons8_info_50px"
+            android:title="@string/menu_about" />
+        <item
+            android:id="@+id/nav_contact"
+            android:icon="@drawable/ic_round_contact_mail_24"
+            android:title="@string/menu_contact" />
+        <item
+            android:id="@+id/nav_sign"
+            android:icon="@drawable/ic_round_login_24"
+            android:title="@string/sign_in" />
+
+<!--        <item-->
+<!--            android:id="@+id/nav_sreg"-->
+<!--            android:icon="@drawable/ic_baseline_how_to_reg_24"-->
+<!--            android:title="@string/s_reg" />-->
+        <item
+            android:id="@+id/nav_developer"
+            android:icon="@drawable/icons8_security_configuration_50px"
+            android:title="@string/dev" />
+        <item
+            android:id="@+id/nav_terms_cond"
+            android:icon="@drawable/icons8_terms_and_conditions_50px"
+            android:title="@string/terms" />
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/icons8_faq_50px_2"
+            android:title="@string/faq" />
+        <item
+            android:id="@+id/nav_slogin"
+            android:icon="@drawable/icons8_reseller_50px"
+            android:title="@string/s_login" />
+    </group>
+</menu>
