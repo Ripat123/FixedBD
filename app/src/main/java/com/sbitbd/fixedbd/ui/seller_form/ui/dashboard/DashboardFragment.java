@@ -1,11 +1,18 @@
 package com.sbitbd.fixedbd.ui.seller_form.ui.dashboard;
 
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
+
 import android.app.ProgressDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +45,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 import com.sbitbd.fixedbd.Config.DoConfig;
+import com.sbitbd.fixedbd.Config.service;
 import com.sbitbd.fixedbd.MainActivity;
 import com.sbitbd.fixedbd.R;
 import com.sbitbd.fixedbd.databinding.FragmentDashboardBinding;
@@ -51,6 +59,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,6 +83,7 @@ public class DashboardFragment extends Fragment {
     private HomeViewModel homeViewModel = new HomeViewModel();
     private ProgressDialog progressDialog;
     private String seller_id;
+    private static final String TAG = "JobService";
     private View root1;
     private int datecheck = 0;
     private double accounts, amount, withdraw, sale_bal, commission_with, deposit_bal_with;
@@ -91,8 +101,14 @@ public class DashboardFragment extends Fragment {
         });
         dashboardViewModel.getcontext().setValue(root1.getContext().getApplicationContext());
         dashboardViewModel.getBinding().setValue(binding);
-        initview(root1);
+
         return root1;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initview(view);
     }
 
     private void initview(View root) {
@@ -117,7 +133,6 @@ public class DashboardFragment extends Fragment {
         Withdraw6 = binding.withdraw6;
 
         seller_id = homeViewModel.getSellerID(root.getContext().getApplicationContext());
-
 
         log_card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -736,7 +751,7 @@ public class DashboardFragment extends Fragment {
         TextView end_date = bottomSheetDialog.findViewById(R.id.date_t1);
 
 
-        MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
+        MaterialDatePicker.Builder<Long> materialDateBuilder = MaterialDatePicker.Builder.datePicker();
         materialDateBuilder.setTitleText("SELECT A DATE");
         materialDateBuilder.setTheme(R.style.RoundShapeCalenderTheme);
 
@@ -796,17 +811,18 @@ public class DashboardFragment extends Fragment {
                     Toast.makeText(root1.getContext(), "Select a date", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 progressDialog = ProgressDialog.show(root1.getContext(), "", "Loading...", false, false);
                 String sql = "INSERT INTO `notification`(`title`, `description`, `start_date`,`end_date`) VALUES(" +
-                        "'" + title.getText().toString().trim() + "','" + description.getText().toString().trim() + "'" +
-                        ",'" + start_date.getText().toString() + "','" + end_date.getText().toString().trim() + "')";
+                        "'" + title.getText().toString().trim() + "','" + Html.toHtml(description.getText()) + "'" +
+                        ",'" + start_date.getText().toString().trim() + "','" + end_date.getText().toString().trim() + "')";
                 dashboardViewModel.getData_insert(sql).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
                         progressDialog.dismiss();
                         if (aBoolean) {
                             bottomSheetDialog.dismiss();
-                            Toast.makeText(root1.getContext().getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
+                            scheduleJob();
                         } else
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
 
@@ -816,6 +832,37 @@ public class DashboardFragment extends Fragment {
         });
 
         bottomSheetDialog.show();
+    }
+
+    private void scheduleJob(){
+        try {
+            ComponentName componentName = new ComponentName(getContext(), service.class);
+            JobInfo jobInfo = new JobInfo.Builder(123,componentName)
+                    .setRequiresCharging(false)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .setPersisted(true)
+                    .setPeriodic(15 * 60 * 1000)
+                    .build();
+            JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
+            int result_code = jobScheduler.schedule(jobInfo);
+            if (result_code == JobScheduler.RESULT_SUCCESS)
+                Log.d(TAG,"scheduled");
+            else
+                Log.d(TAG,"scheduling failed");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void cancelScheduled(){
+        try {
+            JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancel(123);
+            Log.d(TAG,"job cancelled");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

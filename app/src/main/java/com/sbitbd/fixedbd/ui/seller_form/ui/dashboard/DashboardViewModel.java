@@ -2,6 +2,7 @@ package com.sbitbd.fixedbd.ui.seller_form.ui.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -53,10 +54,10 @@ public class DashboardViewModel extends ViewModel {
     }
 
     protected LiveData<Boolean> getData_insert(String sql) {
-        if (data_insert == null){
+//        if (data_insert == null){
             data_insert = new MutableLiveData<>();
             data_insertion(sql);
-        }
+//        }
         return data_insert;
     }
 
@@ -66,6 +67,7 @@ public class DashboardViewModel extends ViewModel {
 
     private void data_insertion(String sql) {
         try {
+
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
                     new Response.Listener<String>() {
                         @Override

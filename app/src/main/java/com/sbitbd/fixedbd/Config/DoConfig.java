@@ -35,6 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class DoConfig {
 
     public static final String FOUR_DMS = "https://fixedbd.com/java/four_dms.php";
+    public static final String SIX_DMS = "https://fixedbd.com/java/six_dms.php";
     public static final String SELLER_REG = "https://fixedbd.com/java/seller_reg.php";
     public static final String OTP_SEND = "https://fixedbd.com/java/send_otp.php";
     public static final String SELLER_OTP = "https://fixedbd.com/java/seller_otp.php";
@@ -101,6 +102,8 @@ public class DoConfig {
     public static final String TWO = "two";
     public static final String THREE = "three";
     public static final String FOUR = "four";
+    public static final String FIVE = "five";
+    public static final String SIX = "six";
     private List<order_model> order_modelsList = new ArrayList<>();
 
     public String encrypt(String value) {
