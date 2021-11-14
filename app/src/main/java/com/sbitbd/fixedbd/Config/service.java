@@ -160,7 +160,7 @@ public class service extends JobService {
                 .setSound(alarmSound)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_PROMO)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setDefaults(NotificationCompat.DEFAULT_ALL | NotificationCompat.DEFAULT_VIBRATE)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
