@@ -3,8 +3,10 @@ package com.sbitbd.fixedbd.Config;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
 import androidx.work.Configuration;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -25,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.sbitbd.fixedbd.Adapter.four_model;
+import com.sbitbd.fixedbd.MainActivity;
 import com.sbitbd.fixedbd.R;
 import com.sbitbd.fixedbd.ui.product_controller;
 
@@ -149,6 +153,13 @@ public class service extends JobService {
     }
 
     private void notification(String title,String description){
+        Intent resultIntent = new Intent(this, MainActivity.class);
+// Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+// Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.buynfeel)
@@ -161,6 +172,7 @@ public class service extends JobService {
                 .setSound(alarmSound)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_PROMO)
+                .setContentIntent(resultPendingIntent)
                 .setDefaults(NotificationCompat.DEFAULT_ALL | NotificationCompat.DEFAULT_VIBRATE)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
