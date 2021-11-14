@@ -90,6 +90,7 @@ public class service extends JobService {
                     "Foreground Service Channel",
                     NotificationManager.IMPORTANCE_HIGH
             );
+            serviceChannel.enableVibration(true);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
         }

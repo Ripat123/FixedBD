@@ -221,6 +221,8 @@ public class DashboardFragment extends Fragment {
                 notification_set();
             }
         });
+        if (!homeViewModel.getSellerID(getContext()).equals("126"))
+            Withdraw6.setVisibility(View.GONE);
 
     }
 
@@ -825,7 +827,6 @@ public class DashboardFragment extends Fragment {
                             scheduleJob();
                         } else
                             Toast.makeText(root1.getContext().getApplicationContext(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
-
                     }
                 });
             }
