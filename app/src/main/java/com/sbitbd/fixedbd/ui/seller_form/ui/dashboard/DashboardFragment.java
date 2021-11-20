@@ -701,17 +701,26 @@ public class DashboardFragment extends Fragment {
                         @Override
                         public void onResponse(String response) {
                             if (response != null && !response.trim().equals("")) {
-                                if (check == 0)
-                                    amount = Double.parseDouble(response.trim());
-                                else if (check == 1) {
-                                    withdraw = Double.parseDouble(response.trim());
-                                    accounts = amount - withdraw;
-                                } else if (check == 2) {
-                                    sale_bal = Double.parseDouble(response.trim());
-                                } else if (check == 3) {
-                                    commission_with = Double.parseDouble(response.trim());
-                                } else if (check == 4) {
-                                    deposit_bal_with = Double.parseDouble(response.trim());
+                                switch (check) {
+                                    case 0:
+                                        amount = Double.parseDouble(response.trim());
+                                        break;
+                                    case 1:
+                                        withdraw = Double.parseDouble(response.trim());
+                                        accounts = amount - withdraw;
+                                        break;
+                                    case 2:
+                                        sale_bal = Double.parseDouble(response.trim());
+                                        break;
+                                    case 3:
+                                        commission_with = Double.parseDouble(response.trim());
+                                        break;
+                                    case 4:
+                                        deposit_bal_with = Double.parseDouble(response.trim());
+                                        break;
+                                    case 5:
+                                        withdraw4.setEnabled(false);
+                                        break;
                                 }
                             }
                         }
@@ -882,5 +891,6 @@ public class DashboardFragment extends Fragment {
                 "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 3);
         getCharge("select sum(deposit_amount - withdraw) as 'id' from Deposit_amount where member_id " +
                 "= '" + homeViewModel.getSellerID(root1.getContext().getApplicationContext()) + "'", 4);
+        getCharge("select status_two as 'id' from sellers where id = '"+homeViewModel.getSellerID(getContext())+"'", 5);
     }
 }
