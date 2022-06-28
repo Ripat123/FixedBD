@@ -36,7 +36,7 @@
         <item name="android:background">@color/black</item>
     </style>
 
-    <style name="card_main" parent="CardView">
+    <style name="card_main" parent="Widget.Material3.CardView.Filled">
         <item name="android:background">#323232</item>
     </style>
 

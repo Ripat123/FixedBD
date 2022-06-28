@@ -45,7 +45,7 @@
         <item name="android:background">#EFEFEF</item>
     </style>
 
-    <style name="card_main" parent="CardView">
+    <style name="card_main" parent="Widget.Material3.CardView.Filled">
         <item name="android:background">@color/white</item>
     </style>
 
