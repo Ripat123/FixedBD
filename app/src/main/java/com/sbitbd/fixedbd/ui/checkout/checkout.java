@@ -46,7 +46,7 @@ import java.util.Map;
 public class checkout extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private RecyclerView recyclerView;
-    private checkout_pro_model checkout_pro_model;
+    //private checkout_pro_model checkout_pro_model;
     private checkout_pro_adapter checkout_pro_adapter;
     private RadioButton cash_rd, bkash_rd, rocket_rd, nagad_rd, pro_bal_id, com_bal_id, fund_id;
     private DoConfig config;
@@ -154,14 +154,10 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         if (gid != null && !gid.equals("")) {
             getGuestData(gid);
         } else {
-            sign_in(checkout.this, null, null, "1");
+            gid= "1";
+            //sign_in(checkout.this, null, null, "1");
         }
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitAction();
-            }
-        });
+        submit.setOnClickListener(v -> submitAction());
 //        getBalance("SELECT sum(amount - withdraw) as 'id' from member_product_balance WHERE " +
 //                "member_id = '"+homeViewModel.getSellerID(checkout.this)+"'",pro_bal_id,1);
 //        getBalance("SELECT sum(commision_balance - withdraw) as 'id' from order_customer_commision WHERE " +
@@ -586,11 +582,11 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 
     private void submitAction() {
         try {
-            if (first_name.getText().toString().trim().equals("")) {
-                first_name.setError("Empty First Name");
-                Toast.makeText(checkout.this, "Empty First Name", Toast.LENGTH_LONG).show();
-                return;
-            }
+//            if (first_name.getText().toString().trim().equals("")) {
+//                first_name.setError("Empty First Name");
+//                Toast.makeText(checkout.this, "Empty First Name", Toast.LENGTH_LONG).show();
+//                return;
+//            }
             if (Phone.getText().toString().trim().equals("")) {
                 Phone.setError("Empty Phone Number");
                 Toast.makeText(checkout.this, "Empty Phone Number", Toast.LENGTH_LONG).show();
@@ -606,11 +602,11 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 Toast.makeText(checkout.this, "Select District", Toast.LENGTH_LONG).show();
                 return;
             }
-            if (fulladdress.getText().toString().trim().equals("")) {
-                fulladdress.setError("Empty Full Address");
-                Toast.makeText(checkout.this, "Empty Full Address", Toast.LENGTH_LONG).show();
-                return;
-            }
+//            if (fulladdress.getText().toString().trim().equals("")) {
+//                fulladdress.setError("Empty Full Address");
+//                Toast.makeText(checkout.this, "Empty Full Address", Toast.LENGTH_LONG).show();
+//                return;
+//            }
             if (!cash_rd.isSelected() && !pay_type.equals("cash") && !pay_type.equals("Product Balance")
                     && !pay_type.equals("Commision Balance") && !pay_type.equals("Add Funds Balance")) {
                 if (mobileNO.equals("")) {
@@ -671,29 +667,24 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT_DELIVERY,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("failed") && !response.equals("problem")) {
-                                String gid = homeViewModel.getGuestID(context);
-                                if (gid == null || gid.equals("")) {
-                                    sign_in(context, response, progressDialog, "0");
+                    response -> {
+                        if (!response.equals("failed") && !response.equals("problem")) {
+                            String gid = homeViewModel.getGuestID(context);
+                            if (gid == null || gid.equals("")) {
+                                gid = "1";
+                                //sign_in(context, response, progressDialog, "0");
 //                                    online_gid(context,response);
-                                } else
-                                    invoice_query(response, gid, context, progressDialog);
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                             }
+                            //else
+                                invoice_query(response, gid, context, progressDialog);
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -718,31 +709,24 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
             }
 //            String sql = "SELECT id FROM `guest` WHERE (email = '"+username+"' OR phone = '"+username+"') AND password = '"+pass+"'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_LOGIN_INFO,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (check.equals("1"))
-                                progress.dismiss();
-                            if (!response.equals("1") && !response.equals("") && !response.equals("{\"result\":[]}")) {
-                                show_user_data(response, check, context, delID, progressDialog);
+                    response -> {
+                        if (check.equals("1"))
+                            progress.dismiss();
+                        if (!response.equals("1") && !response.equals("") && !response.equals("{\"result\":[]}")) {
+                            show_user_data(response, check, context, delID, progressDialog);
 
-                            } else {
-                                Toast.makeText(context, "Failed, Please try again", Toast.LENGTH_LONG).show();
-                                sign_in(context, delID, progressDialog, check);
-                            }
+                        } else {
+                            Toast.makeText(context, "Failed, Please try again", Toast.LENGTH_LONG).show();
+                            sign_in(context, delID, progressDialog, check);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (check.equals("1"))
-                        progress.dismiss();
-                    else
-                        progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                    sign_in(context, delID, progressDialog, check);
-                }
-            }) {
+                    }, error -> {
+                        if (check.equals("1"))
+                            progress.dismiss();
+                        else
+                            progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                        sign_in(context, delID, progressDialog, check);
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();

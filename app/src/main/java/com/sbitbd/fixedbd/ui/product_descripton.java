@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -73,7 +74,7 @@ public class product_descripton extends AppCompatActivity {
     private RecyclerView recyclerView;
     private product_adapter product_adapter;
     private HomeViewModel homeViewModel = new HomeViewModel();
-    private Toolbar toolbar;
+    //private Toolbar toolbar;
     private sliderModel sliderModel;
     private List<String> size = new ArrayList<>();
     private List<String> color = new ArrayList<>();
@@ -127,72 +128,50 @@ public class product_descripton extends AppCompatActivity {
         pro_dis.setPaintFlags(pro_dis.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         setcomponent();
         count();
-        cart_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(product_descripton.this, sh_cart.class));
-            }
-        });
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        pro_view_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Max >= Integer.parseInt(quant)) {
-                    if (buy_earn == 1) {
+        cart_btn.setOnClickListener(v -> startActivity(new Intent(product_descripton.this, sh_cart.class)));
+        back_btn.setOnClickListener(v -> onBackPressed());
+        pro_view_btn.setOnClickListener(v -> {
+            if (Max >= Integer.parseInt(quant)) {
+                if (buy_earn == 1) {
 //                        String gid = homeViewModel.getGuestID(product_descripton.this);
-                        String s_id = homeViewModel.getSellerID(product_descripton.this);
-                        if (s_id != null && !s_id.equals("")) {
-                            checkCartInsert(v);
-                        } else {
-                            if (product_controller.getPref("seller", product_descripton.this) != null)
-                                checkCartInsert(v);
-                            else
-                                product_controller.number_verify(product_descripton.this);
-                        }
-                    } else {
+                    String s_id = homeViewModel.getSellerID(product_descripton.this);
+                    if (s_id != null && !s_id.equals("")) {
                         checkCartInsert(v);
-                    }
-                }
-            }
-        });
-        pro_add_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Max >= Integer.parseInt(quant)) {
-                    if (buy_earn == 1) {
-//                        String gid = homeViewModel.getGuestID(product_descripton.this);
-                        String s_id = homeViewModel.getSellerID(product_descripton.this);
-                        if (s_id != null && !s_id.equals("")) {
-                            addCart(v);
-                        } else{
-                            if (product_controller.getPref("seller", product_descripton.this) != null)
-                                checkCartInsert(v);
-                            else
-                                product_controller.number_verify(product_descripton.this);
-                        }
                     } else {
-                        addCart(v);
+                        if (product_controller.getPref("seller", product_descripton.this) != null)
+                            checkCartInsert(v);
+                        else {
+                            checkCartInsert(v);
+                            //product_controller.number_verify(product_descripton.this);
+                        }
                     }
+                } else {
+                    checkCartInsert(v);
                 }
             }
         });
-        color_a.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getid(color_a.getText().toString(), size_a.getText().toString(), min);
+        pro_add_btn.setOnClickListener(v -> {
+            if (Max >= Integer.parseInt(quant)) {
+                if (buy_earn == 1) {
+//                        String gid = homeViewModel.getGuestID(product_descripton.this);
+                    String s_id = homeViewModel.getSellerID(product_descripton.this);
+                    if (s_id != null && !s_id.equals("")) {
+                        addCart(v);
+                    } else{
+                        if (product_controller.getPref("seller", product_descripton.this) != null)
+                            checkCartInsert(v);
+                        else {
+                            addCart(v);
+                            //product_controller.number_verify(product_descripton.this);
+                        }
+                    }
+                } else {
+                    addCart(v);
+                }
             }
         });
-        size_a.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getid(color_a.getText().toString(), size_a.getText().toString(), min);
-            }
-        });
+        color_a.setOnItemClickListener((parent, view, position, id) -> getid(color_a.getText().toString(), size_a.getText().toString(), min));
+        size_a.setOnItemClickListener((parent, view, position, id) -> getid(color_a.getText().toString(), size_a.getText().toString(), min));
     }
 
     private void checkCartInsert(View v) {
@@ -288,19 +267,10 @@ public class product_descripton extends AppCompatActivity {
                     "`product_productinfo`.`id` = `product_size`.`product_id` INNER JOIN `product_color` ON `product_productinfo`.`id` = `product_color`.`product_id` " +
                     "WHERE `product_productinfo`.`id` = '" + id + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.DISTRICT_DELIVERY,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1"))
-                                showColor_size(response);
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> {
+                        if (!response.equals("1"))
+                            showColor_size(response);
+                    }, error -> Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -322,19 +292,10 @@ public class product_descripton extends AppCompatActivity {
         try {
             String sql = "SELECT buy_earn as 'id' FROM `product_productinfo` WHERE product_productinfo.buy_earn = '1' and id = '" + id + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (response.trim().equals("1"))
-                                buy_earn = 1;
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
+                    response -> {
+                        if (response.trim().equals("1"))
+                            buy_earn = 1;
+                    }, error -> Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_SHORT).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -355,38 +316,36 @@ public class product_descripton extends AppCompatActivity {
     private void getid(String color, String size, int min) {
         try {
             progressDialog = ProgressDialog.show(product_descripton.this, "", "Loading", false, false);
-            String sql = "SELECT `productstocks`.`quentity` AS 'id' FROM productstocks WHERE productstocks." +
-                    "`product_id` = '" + id + "' AND productstocks.`color`='" + color + "' AND productstocks.`size`='" + size + "'";
+            String sql = "SELECT sum(productstocks.quentity)-sum(shopping_carts.quantity) as 'id' FROM " +
+                    "`productstocks` inner join shopping_carts on shopping_carts.product_id = productstocks." +
+                    "product_id where productstocks.product_id = '"+id+"' and productstocks.size = '"+size+"' " +
+                    "and productstocks.color = '"+color+"' and shopping_carts.size = productstocks.size" +
+                    " and shopping_carts.color = productstocks.color ";
+            //and shopping_carts.status='1'
+            Log.d("ddd",sql);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                progressDialog.dismiss();
-                                if (response != null && !response.equals("0")) {
-                                    stock_status.setText(R.string.in_stock);
-                                    stock_status.setTextColor(getResources().getColor(R.color.stock_green));
-                                    pro_add_btn.setEnabled(true);
-                                    pro_view_btn.setEnabled(true);
-                                    Max = Integer.parseInt(response);
-                                    setbtn(min, Integer.parseInt(response));
-                                } else if (response != null && Integer.parseInt(response) <= 0) {
-                                    stock_out();
-                                } else {
-                                    stock_out();
-                                }
-                            } catch (Exception e) {
+                    response -> {
+                        try {
+                            progressDialog.dismiss();
+                            if (response != null && !response.equals("0")) {
+                                stock_status.setText(R.string.in_stock);
+                                stock_status.setTextColor(getResources().getColor(R.color.stock_green));
+                                pro_add_btn.setEnabled(true);
+                                pro_view_btn.setEnabled(true);
+                                Max = Integer.parseInt(response);
+                                setbtn(min, Integer.parseInt(response));
+                            } else if (response != null && Integer.parseInt(response) <= 0) {
+                                stock_out();
+                            } else {
                                 stock_out();
                             }
+                        } catch (Exception e) {
+                            stock_out();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -419,67 +378,58 @@ public class product_descripton extends AppCompatActivity {
                     "   FROM `product_productinfo` INNER JOIN product_measurement ON product_productinfo.measurement_type = product_measurement.id " +
                     "WHERE `product_productinfo`.id = '" + id + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GUEST_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                    response -> {
 
-                            if (!response.equals("1") && !response.equals("")) {
-                                cart_model = operation.showProDesJSON(response);
-                                try {
-                                    if (cart_model.getProName() == null || Integer.parseInt(cart_model.getProName()) <= 1) {
-                                        min_quant.setText("1 " + cart_model.getDis_val());
-                                        quant = "1";
-                                        min = 1;
-                                    } else {
-                                        min_quant.setText(cart_model.getProName() + " " + cart_model.getDis_val());
-                                        quant = cart_model.getProName();
-                                        min = Integer.parseInt(cart_model.getProName());
-                                    }
-                                    if (cart_model.getDis_price() != null && cart_model.getDis_price().equals("1")) {
-                                        getid(color, size, min);
+                        if (!response.equals("1") && !response.equals("")) {
+                            cart_model = operation.showProDesJSON(response);
+                            try {
+                                if (cart_model.getProName() == null || Integer.parseInt(cart_model.getProName()) <= 1) {
+                                    min_quant.setText("1 " + cart_model.getDis_val());
+                                    quant = "1";
+                                    min = 1;
+                                } else {
+                                    min_quant.setText(cart_model.getProName() + " " + cart_model.getDis_val());
+                                    quant = cart_model.getProName();
+                                    min = Integer.parseInt(cart_model.getProName());
+                                }
+                                if (cart_model.getDis_price() != null && cart_model.getDis_price().equals("1")) {
+                                    getid(color, size, min);
 //                                        stock_status.setText("In Stock");
 //                                        stock_status.setTextColor(getResources().getColor(R.color.stock_green));
 //                                        pro_add_btn.setEnabled(true);
 //                                        pro_view_btn.setEnabled(true);
-                                    } else {
-                                        stock_status.setText(R.string.out_stock);
-                                        stock_status.setTextColor(getResources().getColor(R.color.main_color));
-                                        pro_add_btn.setEnabled(false);
-                                        pro_view_btn.setEnabled(false);
-                                    }
-                                } catch (Exception e) {
-                                    min_quant.setText("1 " + cart_model.getDis_val());
-                                    quant = "1";
-                                    min = 1;
-                                    getid(color, size, min);
+                                } else {
+                                    stock_status.setText(R.string.out_stock);
+                                    stock_status.setTextColor(getResources().getColor(R.color.main_color));
+                                    pro_add_btn.setEnabled(false);
+                                    pro_view_btn.setEnabled(false);
                                 }
-                                try {
-                                    if (cart_model.getPrice() != null && !cart_model.getPrice().equals("")) {
-                                        show_product(cart_model.getPrice());
-                                    }
-                                } catch (Exception e) {
+                            } catch (Exception e) {
+                                min_quant.setText("1 " + cart_model.getDis_val());
+                                quant = "1";
+                                min = 1;
+                                getid(color, size, min);
+                            }
+                            try {
+                                if (cart_model.getPrice() != null && !cart_model.getPrice().equals("")) {
+                                    show_product(cart_model.getPrice());
                                 }
-                                String encodedHtml = Base64.encodeToString(cart_model.getSize().getBytes(),
-                                        Base64.NO_PADDING);
-                                pro_discrip.loadData(encodedHtml, "text/html", "base64");
+                            } catch (Exception e) {
+                            }
+                            String encodedHtml = Base64.encodeToString(cart_model.getSize().getBytes(),
+                                    Base64.NO_PADDING);
+                            pro_discrip.loadData(encodedHtml, "text/html", "base64");
 //                                http://salesman-bd.com/sms.html
 
 //                                pro_discrip.loadData("<html><body>" + cart_model.getSize() + "</body></html>",
 //                                        "text/html; charset=utf-8", "UTF-8");
-                            } else {
-                                stock_status.setText(R.string.out_stock);
-                                stock_status.setTextColor(getResources().getColor(R.color.main_color));
-                                pro_add_btn.setEnabled(false);
-                                pro_view_btn.setEnabled(false);
-                            }
+                        } else {
+                            stock_status.setText(R.string.out_stock);
+                            stock_status.setTextColor(getResources().getColor(R.color.main_color));
+                            pro_add_btn.setEnabled(false);
+                            pro_view_btn.setEnabled(false);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -565,26 +515,20 @@ public class product_descripton extends AppCompatActivity {
     private void setbtn(int min, int max) {
         try {
             quantity.setText(String.valueOf(min));
-            incre.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Integer.parseInt(quantity.getText().toString()) < max) {
-                        int oldquant = Integer.parseInt(quantity.getText().toString());
-                        oldquant++;
-                        quantity.setText(String.valueOf(oldquant));
-                        quant = String.valueOf(oldquant);
-                    }
+            incre.setOnClickListener(v -> {
+                if (Integer.parseInt(quantity.getText().toString()) < max) {
+                    int oldquant = Integer.parseInt(quantity.getText().toString());
+                    oldquant++;
+                    quantity.setText(String.valueOf(oldquant));
+                    quant = String.valueOf(oldquant);
                 }
             });
-            decre.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Integer.parseInt(quantity.getText().toString()) > min) {
-                        int oldquant = Integer.parseInt(quantity.getText().toString());
-                        oldquant--;
-                        quantity.setText(String.valueOf(oldquant));
-                        quant = String.valueOf(oldquant);
-                    }
+            decre.setOnClickListener(v -> {
+                if (Integer.parseInt(quantity.getText().toString()) > min) {
+                    int oldquant = Integer.parseInt(quantity.getText().toString());
+                    oldquant--;
+                    quantity.setText(String.valueOf(oldquant));
+                    quant = String.valueOf(oldquant);
                 }
             });
         } catch (Exception e) {
@@ -596,20 +540,11 @@ public class product_descripton extends AppCompatActivity {
 
             String sql = "SELECT image FROM `product_images` WHERE `product_id` = '" + id + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.SLIDER_IMG,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            modelList = showimgJson(response);
-                            sliderAdapter = new productAdapter(product_descripton.this, modelList);
-                            sliderView.setSliderAdapter(sliderAdapter);
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> {
+                        modelList = showimgJson(response);
+                        sliderAdapter = new productAdapter(product_descripton.this, modelList);
+                        sliderView.setSliderAdapter(sliderAdapter);
+                    }, error -> Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -655,22 +590,13 @@ public class product_descripton extends AppCompatActivity {
                     "`product_productinfo`.`current_price`,`product_productinfo`.`image` " +
                     "FROM `product_productinfo` WHERE product_productinfo.category_id = '" + id + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.PRO_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1")) {
-                                homeViewModel.showProJSON(response, cart_model, product_adapter, product_descripton.this);
-                            } else {
-                                Toast.makeText(product_descripton.this, "Not found", Toast.LENGTH_SHORT).show();
-                            }
+                    response -> {
+                        if (!response.equals("1")) {
+                            homeViewModel.showProJSON(response, cart_model, product_adapter, product_descripton.this);
+                        } else {
+                            Toast.makeText(product_descripton.this, "Not found", Toast.LENGTH_SHORT).show();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();

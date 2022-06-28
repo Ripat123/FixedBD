@@ -24,7 +24,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/pro_des_back"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -103,6 +103,7 @@
                 android:id="@+id/pro_sliderid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/Widget.Material3.CardView.Elevated"
                 android:layout_marginStart="3dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="3dp"
@@ -235,7 +236,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/color_lay"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -263,7 +264,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/size_lay"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -314,7 +315,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/pro_quant_decre"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="45dp"
                     android:layout_height="40dp"
                     app:icon="@drawable/minus"
@@ -330,6 +331,7 @@
                     android:layout_marginStart="5dp"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp"
+                    style="@style/Widget.Material3.CardView.Elevated"
                     app:layout_constraintEnd_toStartOf="@+id/pro_quant_incre"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/pro_quant_decre"
@@ -356,7 +358,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/pro_quant_incre"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="45dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="5dp"
