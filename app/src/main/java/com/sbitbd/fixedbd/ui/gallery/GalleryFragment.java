@@ -3,6 +3,7 @@ package com.sbitbd.fixedbd.ui.gallery;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,17 +87,22 @@ public class GalleryFragment extends Fragment {
             Cursor cursor = sqliteDB.getUerData("SELECT * FROM guest");
             if(cursor.getCount() > 0) {
                 if (cursor.moveToNext()) {
-                    email = cursor.getString(cursor.getColumnIndex("email"));
-                    phone = cursor.getString(cursor.getColumnIndex("phone"));
-                    id = cursor.getString(cursor.getColumnIndex("guest_id"));
+                    email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+                    phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
+                    id = cursor.getString(cursor.getColumnIndexOrThrow("guest_id"));
                 }
             }
 //            String gid = homeViewModel.getGuestID(root.getContext().getApplicationContext());
             if(id == null || id.equals("")){
-                order_sign.setVisibility(View.VISIBLE);
-//                String deviceUniqueIdentifier = Settings.Secure.getString(root.getContext().getApplicationContext()
-//                        .getContentResolver(), Settings.Secure.ANDROID_ID);
-//                config.online_gid(root.getContext().getApplicationContext(),deviceUniqueIdentifier,order_rec,notfound_id);
+                order_sign.setVisibility(View.GONE);
+                String deviceUniqueIdentifier = Settings.Secure.getString(root.getContext().getApplicationContext()
+                        .getContentResolver(), Settings.Secure.ANDROID_ID);
+                String sql1 = "SELECT `invoices`.`invoice_id`,`shopping_carts`.`product_id`,`product_productinfo`.`product_name`," +
+                        "`invoices`.`created_at`,`invoices`.`status` FROM `invoices` INNER JOIN `shopping_carts` ON `invoices`.`session_id` = " +
+                        "`shopping_carts`.`session_id` INNER JOIN `product_productinfo` ON `shopping_carts`.`product_id` = " +
+                        "`product_productinfo`.`id` WHERE `invoices`.`guest_id` = '1' AND `invoices`.`session_id` LIKE '" + deviceUniqueIdentifier + "%'";
+                config.OrderData(root.getContext().getApplicationContext(), sql1, order_rec, notfound_id);
+                //config.online_gid(root.getContext().getApplicationContext(),deviceUniqueIdentifier,order_rec,notfound_id);
             }else {
                 order_sign.setVisibility(View.GONE);
                 String sql = "SELECT `invoices`.`invoice_id`,`shopping_carts`.`product_id`,`product_productinfo`.`product_name`," +

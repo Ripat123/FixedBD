@@ -161,7 +161,7 @@ public class DoConfig {
 
     public void online_gid(Context context, String id, RecyclerView recyclerView, ConstraintLayout materialCardView) {
         try {
-            String sql = "SELECT id FROM `guest` WHERE email = 'info@salesman-bd.com'";
+            String sql = "SELECT id FROM `guest` WHERE id = '1'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, GET_ID,
                     new Response.Listener<String>() {
                         @Override
