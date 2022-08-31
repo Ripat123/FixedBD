@@ -158,17 +158,17 @@ public class MainActivity extends AppCompatActivity {
         snackbar.setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE);
         snackbar.show();
     }
-    public void regularcondSnak(String msg){
-        Snackbar snackbar = Snackbar.make(fab,msg, Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE);
-        snackbar.setAction("OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        snackbar.show();
-    }
+//    public void regularcondSnak(String msg){
+//        Snackbar snackbar = Snackbar.make(fab,msg, Snackbar.LENGTH_INDEFINITE);
+//        snackbar.setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE);
+//        snackbar.setAction("OK", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                snackbar.dismiss();
+//            }
+//        });
+//        snackbar.show();
+//    }
     private void user_check(){
         try {
             homeViewModel = new HomeViewModel();
@@ -209,27 +209,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int getcart(){
-        int id = 0;
-        sqliteDB sqliteDB = new sqliteDB(this);
-        String session = homeViewModel.getSession(this);
-        try {
-            Cursor cursor = sqliteDB.getUerData("SELECT COUNT(id) AS 'id' FROM shopping_carts WHERE session_id = '" + session + "'");
-            if(cursor.getCount() > 0){
-                if(cursor.moveToNext()){
-                    id = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow("id")));
-                }
-            }
-        }catch (Exception e){
-        }
-        finally {
-            try {
-                sqliteDB.close();
-            }catch (Exception e){
-            }
-        }
-        return id;
-    }
+//    private int getcart(){
+//        int id = 0;
+//        sqliteDB sqliteDB = new sqliteDB(this);
+//        String session = homeViewModel.getSession(this);
+//        try {
+//            Cursor cursor = sqliteDB.getUerData("SELECT COUNT(id) AS 'id' FROM shopping_carts WHERE session_id = '" + session + "'");
+//            if(cursor.getCount() > 0){
+//                if(cursor.moveToNext()){
+//                    id = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow("id")));
+//                }
+//            }
+//        }catch (Exception e){
+//        }
+//        finally {
+//            try {
+//                sqliteDB.close();
+//            }catch (Exception e){
+//            }
+//        }
+//        return id;
+//    }
 
     private void scheduleJob(){
         try {
@@ -252,15 +252,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void cancelScheduled(){
-        try {
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-            jobScheduler.cancel(123);
-            Log.d(TAG,"job cancelled");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+//    private void cancelScheduled(){
+//        try {
+//            JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+//            jobScheduler.cancel(123);
+//            Log.d(TAG,"job cancelled");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 
 
 

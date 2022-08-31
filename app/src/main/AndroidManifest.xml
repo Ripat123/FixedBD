@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Ecommerce"
         android:usesCleartextTraffic="true">
         <activity android:name="com.sbitbd.fixedbd.ui.seller_form.ui.pro_view.product_view1"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity android:name="com.sbitbd.fixedbd.ui.seller_form.ui.product_add.product_form"
             android:screenOrientation="portrait"/>
         <activity

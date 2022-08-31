@@ -43,7 +43,7 @@ public class service extends JobService {
     private static final String CHANNEL_ID = "channel";
     private boolean jobcancelled = false;
     private DoConfig config = new DoConfig();
-    private four_model four_model;
+//    private four_model four_model;
     private product_controller product_controller = new product_controller();
 
     public service() {
@@ -63,22 +63,22 @@ public class service extends JobService {
         return true;
     }
 
-    private void dobackground(JobParameters parameters) {
-        new Thread(() -> {
-            for (int i = 0; i < 10; i++) {
-                Log.d(TAG, "job: " + i);
-                if (jobcancelled)
-                    return;
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-//            Log.d(TAG,"job finished");
-//            jobFinished(parameters,false);
-        }).start();
-    }
+//    private void dobackground(JobParameters parameters) {
+//        new Thread(() -> {
+//            for (int i = 0; i < 10; i++) {
+//                Log.d(TAG, "job: " + i);
+//                if (jobcancelled)
+//                    return;
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+////            Log.d(TAG,"job finished");
+////            jobFinished(parameters,false);
+//        }).start();
+//    }
 
     @Override
     public boolean onStopJob(JobParameters params) {
@@ -104,36 +104,27 @@ public class service extends JobService {
         try {
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.FOUR_DMS,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.trim().equals("")) {
-                                try {
-                                    String id = product_controller.getPref("notification_id", service.this);
-                                    JSONObject jsonObject = new JSONObject(response.trim());
-                                    JSONArray result = jsonObject.getJSONArray(config.RESULT);
-                                    JSONObject collegeData = result.getJSONObject(0);
-                                    String notiid = collegeData.getString(config.ONE);
-                                    if (id != null) {
-                                        if (Integer.parseInt(notiid) > Integer.parseInt(id)) {
-                                            notification(collegeData.getString(config.TWO),collegeData.getString(config.THREE));
-                                            product_controller.putPref("notification_id", notiid, service.this);
-                                        }
-                                    } else {
+                    response -> {
+                        if (!response.trim().equals("")) {
+                            try {
+                                String id = product_controller.getPref("notification_id", service.this);
+                                JSONObject jsonObject = new JSONObject(response.trim());
+                                JSONArray result = jsonObject.getJSONArray(config.RESULT);
+                                JSONObject collegeData = result.getJSONObject(0);
+                                String notiid = collegeData.getString(config.ONE);
+                                if (id != null) {
+                                    if (Integer.parseInt(notiid) > Integer.parseInt(id)) {
                                         notification(collegeData.getString(config.TWO),collegeData.getString(config.THREE));
                                         product_controller.putPref("notification_id", notiid, service.this);
                                     }
-                                } catch (Exception e) {
+                                } else {
+                                    notification(collegeData.getString(config.TWO),collegeData.getString(config.THREE));
+                                    product_controller.putPref("notification_id", notiid, service.this);
                                 }
+                            } catch (Exception e) {
                             }
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(service.this, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(service.this, error.toString(), Toast.LENGTH_SHORT).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
