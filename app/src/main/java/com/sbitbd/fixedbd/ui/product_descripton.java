@@ -315,18 +315,18 @@ public class product_descripton extends AppCompatActivity {
 
     private void getid(String color, String size, int min) {
         try {
-            progressDialog = ProgressDialog.show(product_descripton.this, "", "Loading", false, false);
+            //ressDialog = ProgressDialog.show(product_descripton.this, "", "Loading", false, false);
             String sql = "SELECT sum(productstocks.quentity)-sum(shopping_carts.quantity) as 'id' FROM " +
                     "`productstocks` inner join shopping_carts on shopping_carts.product_id = productstocks." +
                     "product_id where productstocks.product_id = '"+id+"' and productstocks.size = '"+size+"' " +
-                    "and productstocks.color = '"+color+"' and shopping_carts.size = productstocks.size" +
-                    " and shopping_carts.color = productstocks.color ";
+                    "or productstocks.color = '"+color+"' and shopping_carts.size = productstocks.size" +
+                    " or shopping_carts.color = productstocks.color ";
             //and shopping_carts.status='1'
             Log.d("ddd",sql);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
                     response -> {
                         try {
-                            progressDialog.dismiss();
+                            //progressDialog.dismiss();
                             if (response != null && !response.equals("0")) {
                                 stock_status.setText(R.string.in_stock);
                                 stock_status.setTextColor(getResources().getColor(R.color.stock_green));
@@ -343,7 +343,7 @@ public class product_descripton extends AppCompatActivity {
                             stock_out();
                         }
                     }, error -> {
-                        progressDialog.dismiss();
+                       // progressDialog.dismiss();
                         Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show();
                     }) {
                 @Override

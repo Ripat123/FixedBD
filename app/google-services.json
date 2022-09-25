@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "116600689550",
+    "project_id": "fixed-bd",
+    "storage_bucket": "fixed-bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116600689550:android:b23a9a751563babd20cadf",
+        "android_client_info": {
+          "package_name": "com.sbitbd.fixedbd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116600689550-5fn22df1e9nsntakobonvo6n194ferfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbg5uxvRXHuQhJYlWXc2CWeo_jIopR_jY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116600689550-5fn22df1e9nsntakobonvo6n194ferfm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

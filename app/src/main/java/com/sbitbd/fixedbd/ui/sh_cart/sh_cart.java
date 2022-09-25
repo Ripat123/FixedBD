@@ -47,18 +47,8 @@ public class sh_cart extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Shopping Cart");
         inititem();
-        homebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        check_out_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(sh_cart.this, checkout.class));
-            }
-        });
+        homebtn.setOnClickListener(v -> finish());
+        check_out_btn.setOnClickListener(v -> startActivity(new Intent(sh_cart.this, checkout.class)));
     }
 
     @Override
@@ -91,12 +81,12 @@ public class sh_cart extends AppCompatActivity {
             Cursor cursor = sqliteDB.getUerData("SELECT * FROM shopping_carts WHERE session_id = '"+homeViewModel.getSession(sh_cart.this)+"'");
             if(cursor.getCount() > 0){
                 while (cursor.moveToNext()){
-                    proID = cursor.getString(cursor.getColumnIndex("product_id"));
-                    status = cursor.getString(cursor.getColumnIndex("status"));
-                    quantity = cursor.getString(cursor.getColumnIndex("quantity"));
-                    color = cursor.getString(cursor.getColumnIndex("color"));
-                    size = cursor.getString(cursor.getColumnIndex("size"));
-                    min_quant = cursor.getString(cursor.getColumnIndex("min_quantity"));
+                    proID = cursor.getString(cursor.getColumnIndexOrThrow("product_id"));
+                    status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
+                    quantity = cursor.getString(cursor.getColumnIndexOrThrow("quantity"));
+                    color = cursor.getString(cursor.getColumnIndexOrThrow("color"));
+                    size = cursor.getString(cursor.getColumnIndexOrThrow("size"));
+                    min_quant = cursor.getString(cursor.getColumnIndexOrThrow("min_quantity"));
                         if(status.equals("0")){
                             operation.onlineCart(sh_cart.this,proID,quantity,min_quant,cart_adapter,
                                     check_out_btn,empty_cart,color,size);

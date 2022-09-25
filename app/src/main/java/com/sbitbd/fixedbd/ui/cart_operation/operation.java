@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -43,6 +42,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 public class operation {
     private HomeViewModel homeViewModel = new HomeViewModel();
@@ -391,7 +392,7 @@ public class operation {
             }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -404,6 +405,42 @@ public class operation {
             requestQueue.add(stringRequest);
         } catch (Exception e) {
         }
+    }
+
+    public void numberInsert(String proIDs, Context context,String phone) {
+        try {
+            String sql = "insert into buynownotification (user_id,phone,product_id,date) values('"+random()+"'" +
+                    ",'"+phone+"','"+proIDs+"','"+getCreatedDate()+"')";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
+                    response -> {
+                        if (!response.equals("1")) {
+                            Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+                        }
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put(config.QUERY, sql);
+                    return params;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
+        } catch (Exception e) {
+        }
+    }
+
+    public static int random(){
+        int num=0;
+        Random random = new Random();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            num = random.nextInt(9999);
+        }
+        return num;
     }
 
     public List<String> showCheck_data(String response, checkout_pro_adapter category_adapter) {
@@ -429,6 +466,22 @@ public class operation {
                 double subtotal = quantity * cur_price;
                 cat_models = new checkout_pro_model(name, quant, String.valueOf(subtotal), id);
                 category_adapter.adduser(cat_models);
+            }
+        } catch (Exception e) {
+        }
+        return shipID;
+    }
+
+    public List<String> products_id(String response) {
+        String id = "";
+        List<String> shipID = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+            for (int i = 0; i <= result.length(); i++) {
+                JSONObject collegeData = result.getJSONObject(i);
+                id = collegeData.getString(config.CAT_ID);
+                shipID.add(id);
             }
         } catch (Exception e) {
         }
@@ -481,6 +534,12 @@ public class operation {
 
     public String getCreateDate() {
         SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date todayDate = new Date();
+        String thisDate = currentDate.format(todayDate);
+        return thisDate;
+    }
+    public String getCreatedDate() {
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy / HH:mm:ss");
         Date todayDate = new Date();
         String thisDate = currentDate.format(todayDate);
         return thisDate;

@@ -286,6 +286,13 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent">
                             <RadioButton
+                                android:id="@+id/without_pay_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:layout_marginTop="15dp"
+                                android:text="@string/order_without_pay"/>
+                            <RadioButton
                                 android:id="@+id/cash_id"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

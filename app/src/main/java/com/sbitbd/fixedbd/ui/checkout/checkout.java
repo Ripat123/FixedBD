@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,7 +50,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
     private RecyclerView recyclerView;
     //private checkout_pro_model checkout_pro_model;
     private checkout_pro_adapter checkout_pro_adapter;
-    private RadioButton cash_rd, bkash_rd, rocket_rd, nagad_rd, pro_bal_id, com_bal_id, fund_id;
+    private RadioButton cash_rd, bkash_rd, rocket_rd, nagad_rd, pro_bal_id, com_bal_id, fund_id,without_pay_id;
     private DoConfig config;
     private HomeViewModel homeViewModel = new HomeViewModel();
     private operation operation = new operation();
@@ -60,7 +62,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
     private static List<cat_model> thanaList = new ArrayList<>();
     private static List<String> model = new ArrayList<>();
     private static List<String> thanamodel = new ArrayList<>();
-    private static List<String> countryList = new ArrayList<>();
+    private static List<String> idList = new ArrayList<>();
     private static List<String> shipping_id = new ArrayList<>();
     private double del_ch = 0, Total = 0, gr_t = 0, pro_balance, commission_balance, fund_balance;
     private static String mobileNO = "", trnID = "", pay_type = "", disTK = "0", subTK, totalTK;
@@ -116,38 +118,60 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         pro_bal_id = findViewById(R.id.pro_bal_id);
         com_bal_id = findViewById(R.id.com_bal_id);
         fund_id = findViewById(R.id.fund_id);
+        without_pay_id = findViewById(R.id.without_pay_id);
 
         dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
         phone_n = dialog_view.findViewById(R.id.phone_di);
         trn_n = dialog_view.findViewById(R.id.trnid);
         district.setOnItemClickListener(this);
 
-        thana.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        TextWatcher watcher = new TextWatcher() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int item;
-                String inQuery = "";
-                cat_model cat_model = thanaList.get(position);
-                gr_t = Double.parseDouble(grnT.getText().toString());
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (Phone.getText().toString().trim().length() == 11){
+                    String pID="";
+                    for (String piD:
+                         idList) {
+                        pID = pID+piD+",";
+                    }
+                    operation.numberInsert(pID,checkout.this,Phone.getText().toString().trim());
+                }
+            }
+        };
+        Phone.addTextChangedListener(watcher);
+        thana.setOnItemClickListener((parent, view, position, id) -> {
+            int item;
+            String inQuery = "";
+            cat_model cat_model = thanaList.get(position);
+            gr_t = Double.parseDouble(grnT.getText().toString());
 //            Total =  gr_t - del_ch;
 
-                item = checkout_pro_adapter.getItemCount();
-                for (int i = 0; i < item; i++) {
-                    if (inQuery.equals(""))
-                        inQuery = "'" + shipping_id.get(i) + "'";
-                    else
-                        inQuery = inQuery + "," + "'" + shipping_id.get(i) + "'";
-                }
+            item = checkout_pro_adapter.getItemCount();
+            for (int i = 0; i < item; i++) {
+                if (inQuery.equals(""))
+                    inQuery = "'" + shipping_id.get(i) + "'";
+                else
+                    inQuery = inQuery + "," + "'" + shipping_id.get(i) + "'";
+            }
 
-                getCharge(cat_model.getId(), inQuery);
+            getCharge(cat_model.getId(), inQuery);
 //            Total = del_ch + Total;
 //            deliT.setText(cat_model.getId());
 //            grnT.setText(String.valueOf(Total));
-                thana_id = cat_model.getId();
+            thana_id = cat_model.getId();
 
-                totalTK = grnT.getText().toString();
-                subTK = subT.getText().toString();
-            }
+            totalTK = grnT.getText().toString();
+            subTK = subT.getText().toString();
         });
 
         String gid = homeViewModel.getGuestID(checkout.this);
@@ -164,153 +188,134 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 //                "member_id = '"+homeViewModel.getSellerID(checkout.this)+"'",com_bal_id,2);
 //        getBalance("SELECT sum(amount - withdraw) as 'id' from addfunds WHERE " +
 //                "member_id = '"+homeViewModel.getSellerID(checkout.this)+"'",fund_id,3);
-        promo_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (coupon_check != 1) {
-                    coupon_check = 1;
-                    getdiscount();
-                } else {
-                    MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
-                    dialogBuilder.setTitle("Promotion");
-                    dialogBuilder.setMessage("Already Applied");
-                    dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
-                        dialog.cancel();
-                    });
-                    dialogBuilder.show();
+        promo_btn.setOnClickListener(v -> {
+            if (coupon_check != 1) {
+                coupon_check = 1;
+                getdiscount();
+            } else {
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Promotion");
+                dialogBuilder.setMessage("Already Applied");
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    dialog.cancel();
+                });
+                dialogBuilder.show();
+            }
+        });
+        nagad_rd.setOnClickListener(v -> {
+            try {
+                dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
+                phone_n = dialog_view.findViewById(R.id.phone_di);
+                trn_n = dialog_view.findViewById(R.id.trnid);
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Nagad");
+                dialogBuilder.setMessage("+8801747666362");
+
+                dialogBuilder.setView(dialog_view);
+                if (pay_type != null && pay_type.equals("nagad")) {
+                    phone_n.setText(mobileNO);
+                    trn_n.setText(trnID);
                 }
+                dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.cancel();
+                    mobileNO = "";
+                    trnID = "";
+                    nagad_rd.setSelected(false);
+                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    mobileNO = phone_n.getText().toString();
+                    trnID = trn_n.getText().toString();
+                    pay_type = "nagad";
+                });
+                dialogBuilder.show();
+            } catch (Exception e) {
             }
-        });
-        nagad_rd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
-                    phone_n = dialog_view.findViewById(R.id.phone_di);
-                    trn_n = dialog_view.findViewById(R.id.trnid);
-                    MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
-                    dialogBuilder.setTitle("Nagad");
-                    dialogBuilder.setMessage("+8801747666362");
 
-                    dialogBuilder.setView(dialog_view);
-                    if (pay_type != null && pay_type.equals("nagad")) {
-                        phone_n.setText(mobileNO);
-                        trn_n.setText(trnID);
-                    }
-                    dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
-                        dialog.cancel();
-                        mobileNO = "";
-                        trnID = "";
-                        nagad_rd.setSelected(false);
-                    });
-                    dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
-                        mobileNO = phone_n.getText().toString();
-                        trnID = trn_n.getText().toString();
-                        pay_type = "nagad";
-                    });
-                    dialogBuilder.show();
-                } catch (Exception e) {
+        });
+        rocket_rd.setOnClickListener(v -> {
+            try {
+                dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
+                phone_n = dialog_view.findViewById(R.id.phone_di);
+                trn_n = dialog_view.findViewById(R.id.trnid);
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Rocket");
+                dialogBuilder.setMessage("+8801747666362");
+
+                dialogBuilder.setView(dialog_view);
+                if (pay_type != null && pay_type.equals("rocket")) {
+                    phone_n.setText(mobileNO);
+                    trn_n.setText(trnID);
                 }
-
+                dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.cancel();
+                    mobileNO = "";
+                    trnID = "";
+                    rocket_rd.setSelected(false);
+                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    mobileNO = phone_n.getText().toString();
+                    trnID = trn_n.getText().toString();
+                    pay_type = "rocket";
+                });
+                dialogBuilder.show();
+            } catch (Exception e) {
             }
-        });
-        rocket_rd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
-                    phone_n = dialog_view.findViewById(R.id.phone_di);
-                    trn_n = dialog_view.findViewById(R.id.trnid);
-                    MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
-                    dialogBuilder.setTitle("Rocket");
-                    dialogBuilder.setMessage("+8801747666362");
 
-                    dialogBuilder.setView(dialog_view);
-                    if (pay_type != null && pay_type.equals("rocket")) {
-                        phone_n.setText(mobileNO);
-                        trn_n.setText(trnID);
-                    }
-                    dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
-                        dialog.cancel();
-                        mobileNO = "";
-                        trnID = "";
-                        rocket_rd.setSelected(false);
-                    });
-                    dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
-                        mobileNO = phone_n.getText().toString();
-                        trnID = trn_n.getText().toString();
-                        pay_type = "rocket";
-                    });
-                    dialogBuilder.show();
-                } catch (Exception e) {
+        });
+        bkash_rd.setOnClickListener(v -> {
+            try {
+                dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
+                phone_n = dialog_view.findViewById(R.id.phone_di);
+                trn_n = dialog_view.findViewById(R.id.trnid);
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Bkash");
+                dialogBuilder.setMessage("+8801714654003");
+
+                dialogBuilder.setView(dialog_view);
+                if (pay_type != null && pay_type.equals("bkash")) {
+                    phone_n.setText(mobileNO);
+                    trn_n.setText(trnID);
                 }
+                dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.cancel();
+                    mobileNO = "";
+                    trnID = "";
+                    bkash_rd.setSelected(false);
+                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    mobileNO = phone_n.getText().toString();
+                    trnID = trn_n.getText().toString();
+                    pay_type = "bkash";
+                });
+                dialogBuilder.show();
+            } catch (Exception e) {
+            }
 
-            }
         });
-        bkash_rd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
-                    phone_n = dialog_view.findViewById(R.id.phone_di);
-                    trn_n = dialog_view.findViewById(R.id.trnid);
-                    MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
-                    dialogBuilder.setTitle("Bkash");
-                    dialogBuilder.setMessage("+8801714654003");
-
-                    dialogBuilder.setView(dialog_view);
-                    if (pay_type != null && pay_type.equals("bkash")) {
-                        phone_n.setText(mobileNO);
-                        trn_n.setText(trnID);
-                    }
-                    dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
-                        dialog.cancel();
-                        mobileNO = "";
-                        trnID = "";
-                        bkash_rd.setSelected(false);
-                    });
-                    dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
-                        mobileNO = phone_n.getText().toString();
-                        trnID = trn_n.getText().toString();
-                        pay_type = "bkash";
-                    });
-                    dialogBuilder.show();
-                } catch (Exception e) {
-                }
-
-            }
+        cash_rd.setOnClickListener(v -> {
+            pay_type = "cash";
+            mobileNO = "";
+            trnID = "";
         });
-        cash_rd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pay_type = "cash";
-                mobileNO = "";
-                trnID = "";
-            }
+        without_pay_id.setOnClickListener(view -> {
+            pay_type = "WithoutPayment";
+            mobileNO = "";
+            trnID = "";
         });
-        pro_bal_id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pay_type = "Product Balance";
-                mobileNO = "";
-                trnID = "";
-            }
+        pro_bal_id.setOnClickListener(v -> {
+            pay_type = "Product Balance";
+            mobileNO = "";
+            trnID = "";
         });
-        com_bal_id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pay_type = "Commision Balance";
-                mobileNO = "";
-                trnID = "";
-            }
+        com_bal_id.setOnClickListener(v -> {
+            pay_type = "Commision Balance";
+            mobileNO = "";
+            trnID = "";
         });
-        fund_id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pay_type = "Add Funds Balance";
-                mobileNO = "";
-                trnID = "";
-            }
+        fund_id.setOnClickListener(v -> {
+            pay_type = "Add Funds Balance";
+            mobileNO = "";
+            trnID = "";
         });
     }
 
@@ -329,31 +334,24 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
             String sql = "SELECT `id`,`discout_price` FROM `coupons` WHERE `coupon_name` = '" + promo_field.getText().toString() + "' " +
                     "AND `start_date` <= CURDATE() AND `end_date` >= CURDATE() AND `min_price` <= '" + subT.getText().toString() + "' AND `status` = '1'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.COUPON,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (!response.equals("1")) {
-                                showDicountjson(response);
-                            } else {
-                                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
-                                dialogBuilder.setTitle("Promotion");
-                                dialogBuilder.setMessage("Promotion not found");
-                                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
-                                    dialog.cancel();
-                                });
-                                dialogBuilder.show();
-                                coupon_check = 0;
-                            }
+                    response -> {
+                        progressDialog.dismiss();
+                        if (!response.equals("1")) {
+                            showDicountjson(response);
+                        } else {
+                            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                            dialogBuilder.setTitle("Promotion");
+                            dialogBuilder.setMessage("Promotion not found");
+                            dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                                dialog.cancel();
+                            });
+                            dialogBuilder.show();
+                            coupon_check = 0;
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -424,25 +422,16 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     "`product_productinfo` ON `shopping_carts`.`product_id` = `product_productinfo`.id WHERE " +
                     "`shopping_carts`.`session_id` = '" + session + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.CHECK_PRO_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            shipping_id = operation.showCheck_data(response, checkout_pro_adapter);
-
-                            getBalance("SELECT sum(amount - withdraw) as 'id' from member_product_balance WHERE " +
-                                    "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", pro_bal_id, 1, getResources().getString(R.string.product_balance));
-                            getBalance("SELECT sum(commision_balance - withdraw) as 'id' from order_customer_commision WHERE " +
-                                    "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", com_bal_id, 2, getResources().getString(R.string.commission_balance));
-                            getBalance("SELECT sum(amount - withdraw) as 'id' from addfunds WHERE " +
-                                    "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", fund_id, 3, getResources().getString(R.string.funds_balance));
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> {
+                        shipping_id = operation.showCheck_data(response, checkout_pro_adapter);
+                        idList = operation.products_id(response);
+                        getBalance("SELECT sum(amount - withdraw) as 'id' from member_product_balance WHERE " +
+                                "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", pro_bal_id, 1, getResources().getString(R.string.product_balance));
+                        getBalance("SELECT sum(commision_balance - withdraw) as 'id' from order_customer_commision WHERE " +
+                                "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", com_bal_id, 2, getResources().getString(R.string.commission_balance));
+                        getBalance("SELECT sum(amount - withdraw) as 'id' from addfunds WHERE " +
+                                "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", fund_id, 3, getResources().getString(R.string.funds_balance));
+                    }, error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -466,18 +455,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
             String sql = "SELECT districts.district_name AS 'charge',`districts`.`id` FROM `districts`";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.DISTRICT_DELIVERY,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            showDistrictList(response);
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> showDistrictList(response), error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -501,18 +479,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
             String sql = "SELECT thana_name AS 'charge',id FROM `thanas` WHERE `district_id` = '" + thID + "'";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.DISTRICT_DELIVERY,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            showThanaList(response);
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> showThanaList(response), error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -608,9 +575,9 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 //                return;
 //            }
             if (!cash_rd.isSelected() && !pay_type.equals("cash") && !pay_type.equals("Product Balance")
-                    && !pay_type.equals("Commision Balance") && !pay_type.equals("Add Funds Balance")) {
+                    && !pay_type.equals("Commision Balance") && !pay_type.equals("Add Funds Balance") && !pay_type.equals("WithoutPayment")) {
                 if (mobileNO.equals("")) {
-                    Toast.makeText(checkout.this, "Empty Mobile No", Toast.LENGTH_LONG).show();
+                    Toast.makeText(checkout.this, "Empty transaction Mobile No", Toast.LENGTH_LONG).show();
                     Toast.makeText(checkout.this, "Please Select Payment Method", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -812,84 +779,70 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         alertDialog.show();
     }
 
-    private void send(Context context, String phone) {
-        try {
-            progressDialog = ProgressDialog.show(context, "", "Sending...", false, false);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.OTP_SEND,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (response.trim().equals("1")) {
-                                Toast.makeText(context, "OTP not sent", Toast.LENGTH_SHORT).show();
-                            } else
-                                Toast.makeText(context, "OTP sent successful, Please wait for a moment.", Toast.LENGTH_SHORT).show();
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.PHONE, phone);
-                    params.put(config.CAT_ID, "");
-                    return params;
-                }
-            };
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    10000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            requestQueue.add(stringRequest);
-        } catch (Exception e) {
-        }
-    }
-    private void otp_login(Context context, String username, String otp,String check,String delID, ProgressDialog progressDialog) {
-        try {
-
-            String sql = "SELECT id FROM `guest` WHERE phone = '" + username + "' AND code = '" + otp + "'";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (!response.trim().equals("")) {
-                                show_user_data(response, check, context, delID, progressDialog);
-
-                            } else {
-                                Toast.makeText(context, "Failed, Please try again", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
-                    return params;
-                }
-            };
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    10000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            requestQueue.add(stringRequest);
-        } catch (Exception e) {
-        }
-    }
+//    private void send(Context context, String phone) {
+//        try {
+//            progressDialog = ProgressDialog.show(context, "", "Sending...", false, false);
+//            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.OTP_SEND,
+//                    response -> {
+//                        progressDialog.dismiss();
+//                        if (response.trim().equals("1")) {
+//                            Toast.makeText(context, "OTP not sent", Toast.LENGTH_SHORT).show();
+//                        } else
+//                            Toast.makeText(context, "OTP sent successful, Please wait for a moment.", Toast.LENGTH_SHORT).show();
+//                    }, error -> {
+//                        progressDialog.dismiss();
+//                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+//                    }) {
+//                @Override
+//                protected Map<String, String> getParams() {
+//                    Map<String, String> params = new HashMap<String, String>();
+//                    params.put(config.PHONE, phone);
+//                    params.put(config.CAT_ID, "");
+//                    return params;
+//                }
+//            };
+//            RequestQueue requestQueue = Volley.newRequestQueue(context);
+//            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+//                    10000,
+//                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//            requestQueue.add(stringRequest);
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void otp_login(Context context, String username, String otp,String check,String delID, ProgressDialog progressDialog) {
+//        try {
+//
+//            String sql = "SELECT id FROM `guest` WHERE phone = '" + username + "' AND code = '" + otp + "'";
+//            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
+//                    response -> {
+//                        progressDialog.dismiss();
+//                        if (!response.trim().equals("")) {
+//                            show_user_data(response, check, context, delID, progressDialog);
+//
+//                        } else {
+//                            Toast.makeText(context, "Failed, Please try again", Toast.LENGTH_LONG).show();
+//                        }
+//                    }, error -> {
+//                        progressDialog.dismiss();
+//                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+//                    }) {
+//                @Override
+//                protected Map<String, String> getParams() {
+//                    Map<String, String> params = new HashMap<String, String>();
+//                    params.put(config.QUERY, sql);
+//                    return params;
+//                }
+//            };
+//            RequestQueue requestQueue = Volley.newRequestQueue(context);
+//            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+//                    10000,
+//                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//            requestQueue.add(stringRequest);
+//        } catch (Exception e) {
+//        }
+//    }
 
     public void sign_up(Context context, String response, ProgressDialog progressDialog, String check) {
         singup_view = LayoutInflater.from(checkout.this).inflate(R.layout.signup_dialog, null);
@@ -954,21 +907,12 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 
             String query = "SELECT * FROM guest WHERE id = '" + sql + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GUEST_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1")) {
-                                showGuest(response);
-                            } else
-                                Toast.makeText(checkout.this, response, Toast.LENGTH_LONG).show();
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> {
+                        if (!response.equals("1")) {
+                            showGuest(response);
+                        } else
+                            Toast.makeText(checkout.this, response, Toast.LENGTH_LONG).show();
+                    }, error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -1020,56 +964,47 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     "WHERE delivery_charges.`shipping_id` IN (" + shipping + ") AND zone_districts.`thana_id` = '" + sql + "'";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                    response -> {
 
-                            if (response != null && !response.equals("1")) {
-                                try {
-                                    if (response.equals("")) {
-                                        deliT.setText("0");
-                                        gr_t = Double.parseDouble(grnT.getText().toString());
-                                        Total = gr_t - del_ch;
-                                        del_ch = 0;
-                                        grnT.setText(String.valueOf(Total));
-                                        totalTK = grnT.getText().toString();
-                                        subTK = subT.getText().toString();
-                                    } else {
-                                        deliT.setText(response);
-                                        gr_t = Double.parseDouble(grnT.getText().toString());
-                                        Total = gr_t - del_ch;
-                                        del_ch = Double.parseDouble(response);
-                                        Total = del_ch + Total;
-                                        grnT.setText(String.valueOf(Total));
-                                        totalTK = grnT.getText().toString();
-                                        subTK = subT.getText().toString();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                        if (response != null && !response.equals("1")) {
+                            try {
+                                if (response.equals("")) {
+                                    deliT.setText("0");
+                                    gr_t = Double.parseDouble(grnT.getText().toString());
+                                    Total = gr_t - del_ch;
+                                    del_ch = 0;
+                                    grnT.setText(String.valueOf(Total));
+                                    totalTK = grnT.getText().toString();
+                                    subTK = subT.getText().toString();
+                                } else {
+                                    deliT.setText(response);
+                                    gr_t = Double.parseDouble(grnT.getText().toString());
+                                    Total = gr_t - del_ch;
+                                    del_ch = Double.parseDouble(response);
+                                    Total = del_ch + Total;
+                                    grnT.setText(String.valueOf(Total));
+                                    totalTK = grnT.getText().toString();
+                                    subTK = subT.getText().toString();
                                 }
-                            } else {
-                                deliT.setText("0");
-                                gr_t = Double.parseDouble(grnT.getText().toString());
-                                Total = gr_t - del_ch;
-                                del_ch = 0;
-                                grnT.setText(String.valueOf(Total));
-                                totalTK = grnT.getText().toString();
-                                subTK = subT.getText().toString();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            getBalance("SELECT sum(amount - withdraw) as 'id' from member_product_balance WHERE " +
-                                    "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", pro_bal_id, 1, getResources().getString(R.string.product_balance));
-                            getBalance("SELECT sum(commision_balance - withdraw) as 'id' from order_customer_commision WHERE " +
-                                    "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", com_bal_id, 2, getResources().getString(R.string.commission_balance));
-                            getBalance("SELECT sum(amount - withdraw) as 'id' from addfunds WHERE " +
-                                    "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", fund_id, 3, getResources().getString(R.string.funds_balance));
+                        } else {
+                            deliT.setText("0");
+                            gr_t = Double.parseDouble(grnT.getText().toString());
+                            Total = gr_t - del_ch;
+                            del_ch = 0;
+                            grnT.setText(String.valueOf(Total));
+                            totalTK = grnT.getText().toString();
+                            subTK = subT.getText().toString();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                        getBalance("SELECT sum(amount - withdraw) as 'id' from member_product_balance WHERE " +
+                                "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", pro_bal_id, 1, getResources().getString(R.string.product_balance));
+                        getBalance("SELECT sum(commision_balance - withdraw) as 'id' from order_customer_commision WHERE " +
+                                "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", com_bal_id, 2, getResources().getString(R.string.commission_balance));
+                        getBalance("SELECT sum(amount - withdraw) as 'id' from addfunds WHERE " +
+                                "member_id = '" + homeViewModel.getSellerID(checkout.this) + "'", fund_id, 3, getResources().getString(R.string.funds_balance));
+                    }, error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -1142,32 +1077,25 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         try {
             homeViewModel = new HomeViewModel();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_GUEST_REG,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (check.equals("1"))
-                                progress.dismiss();
-                            if (!response.equals("Could not Registered in online") && !response.equals("")) {
-                                if (check.equals("0")) {
-                                    invoice_query(reponse, response, context, progressDialog);
-                                }
-//                                checkout.show_user_data(response,check,context,reponse,progressDialog);
-                                homeViewModel.insertuser(context, firstname + " " + lastname, phone, email, password, response);
-                            } else {
-                                Toast.makeText(context, "Failed to Sign up", Toast.LENGTH_LONG).show();
-                                sign_up(context, reponse, progressDialog, check);
+                    response -> {
+                        if (check.equals("1"))
+                            progress.dismiss();
+                        if (!response.equals("Could not Registered in online") && !response.equals("")) {
+                            if (check.equals("0")) {
+                                invoice_query(reponse, response, context, progressDialog);
                             }
+//                                checkout.show_user_data(response,check,context,reponse,progressDialog);
+                            homeViewModel.insertuser(context, firstname + " " + lastname, phone, email, password, response);
+                        } else {
+                            Toast.makeText(context, "Failed to Sign up", Toast.LENGTH_LONG).show();
+                            sign_up(context, reponse, progressDialog, check);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (check.equals("1"))
-                        progress.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                    sign_up(context, reponse, progressDialog, check);
-                }
-            }) {
+                    }, error -> {
+                        if (check.equals("1"))
+                            progress.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                        sign_up(context, reponse, progressDialog, check);
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -1195,33 +1123,26 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         try {
             String sql = "SELECT id FROM guest WHERE phone = '" + phone + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                    response -> {
 
-                            if (!response.equals("1")) {
-                                if (check.equals("0")) {
-                                    Toast.makeText(context, "Phone already taken", Toast.LENGTH_LONG).show();
-                                    sign_up(context, reponse, progressDialog, check);
-                                } else {
-                                    Toast.makeText(context, "Phone already taken", Toast.LENGTH_LONG).show();
-                                    sign_up(context, reponse, progressDialog, check);
-                                    progress.dismiss();
-                                }
+                        if (!response.equals("1")) {
+                            if (check.equals("0")) {
+                                Toast.makeText(context, "Phone already taken", Toast.LENGTH_LONG).show();
+                                sign_up(context, reponse, progressDialog, check);
                             } else {
-                                insertuserData(context, firstname, lastname, phone, email, password, address, reponse, check, progressDialog, progress);
+                                Toast.makeText(context, "Phone already taken", Toast.LENGTH_LONG).show();
+                                sign_up(context, reponse, progressDialog, check);
+                                progress.dismiss();
                             }
+                        } else {
+                            insertuserData(context, firstname, lastname, phone, email, password, address, reponse, check, progressDialog, progress);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (check.equals("1"))
-                        progress.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                    sign_up(context, reponse, progressDialog, check);
-                }
-            }) {
+                    }, error -> {
+                        if (check.equals("1"))
+                            progress.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                        sign_up(context, reponse, progressDialog, check);
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -1242,38 +1163,31 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
     public void getBalance(String sql, RadioButton radioButton, int check, String text) {
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.trim().equals("")) {
-                                radioButton.setText(text + " " + response);
-                                switch (check) {
-                                    case 1:
-                                        pro_balance = Double.parseDouble(response.trim());
-                                        radioButton.setEnabled(Double.parseDouble(grnT.getText().toString()) <= pro_balance);
-                                        break;
-                                    case 2:
-                                        commission_balance = Double.parseDouble(response.trim());
-                                        radioButton.setEnabled(Double.parseDouble(grnT.getText().toString()) <= commission_balance);
-                                        break;
-                                    case 3:
-                                        fund_balance = Double.parseDouble(response.trim());
-                                        radioButton.setEnabled(Double.parseDouble(grnT.getText().toString()) <= fund_balance);
-                                        break;
-                                }
-                            } else {
-                                radioButton.setText(text + " 0");
-                                radioButton.setEnabled(false);
+                    response -> {
+                        if (!response.trim().equals("")) {
+                            radioButton.setText(text + " " + response);
+                            switch (check) {
+                                case 1:
+                                    pro_balance = Double.parseDouble(response.trim());
+                                    radioButton.setEnabled(Double.parseDouble(grnT.getText().toString()) <= pro_balance);
+                                    break;
+                                case 2:
+                                    commission_balance = Double.parseDouble(response.trim());
+                                    radioButton.setEnabled(Double.parseDouble(grnT.getText().toString()) <= commission_balance);
+                                    break;
+                                case 3:
+                                    fund_balance = Double.parseDouble(response.trim());
+                                    radioButton.setEnabled(Double.parseDouble(grnT.getText().toString()) <= fund_balance);
+                                    break;
                             }
+                        } else {
+                            radioButton.setText(text + " 0");
+                            radioButton.setEnabled(false);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    radioButton.setEnabled(false);
-                    Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
+                    }, error -> {
+                        radioButton.setEnabled(false);
+                        Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();

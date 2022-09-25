@@ -12,12 +12,15 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sbitbd.fixedbd.MainActivity;
 import com.sbitbd.fixedbd.R;
+import com.sbitbd.fixedbd.ui.cart_operation.operation;
 
 import java.util.Objects;
 
@@ -62,18 +65,10 @@ public class flash_screen extends AppCompatActivity {
         }
     };
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
-    private final Runnable closeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            startActivity(new Intent(flash_screen.this, MainActivity.class));
-            finish();
-        }
+    private final Runnable mHideRunnable = () -> hide();
+    private final Runnable closeRunnable = () -> {
+        startActivity(new Intent(flash_screen.this, MainActivity.class));
+        finish();
     };
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
@@ -104,7 +99,6 @@ public class flash_screen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_flash_screen);
-
 //        mVisible = true;
 //        mControlsView = findViewById(R.id.fullscreen_content_controls);
 //        mContentView = findViewById(R.id.fullscreen_content);

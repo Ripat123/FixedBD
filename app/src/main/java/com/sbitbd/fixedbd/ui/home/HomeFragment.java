@@ -43,6 +43,7 @@ import com.sbitbd.fixedbd.Config.DoConfig;
 import com.sbitbd.fixedbd.ImageSlider.sliderAdapter;
 import com.sbitbd.fixedbd.ImageSlider.sliderModel;
 import com.sbitbd.fixedbd.R;
+import com.sbitbd.fixedbd.ui.cart_operation.operation;
 import com.sbitbd.fixedbd.ui.category.all_category;
 import com.sbitbd.fixedbd.ui.product_by_cond.product_view;
 import com.sbitbd.fixedbd.ui.search;
@@ -321,25 +322,18 @@ public class HomeFragment extends Fragment {
                     "                    `product_productinfo`.`current_price`,`product_productinfo`.`image` " +
                     "                    FROM `product_productinfo` WHERE `status` = '1' ORDER BY product_productinfo.id DESC LIMIT 10";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.PRO_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                    response -> {
 //                            Toast.makeText(root.getContext().getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                            if (check == 1)
-                                swipeRefreshLayout.setRefreshing(false);
-                            if (!response.equals("1")) {
-                                homeViewModel.showProJSON(response, pro_model, product_adapter, root.getContext().getApplicationContext());
-                            }
+                        if (check == 1)
+                            swipeRefreshLayout.setRefreshing(false);
+                        if (!response.equals("1")) {
+                            homeViewModel.showProJSON(response, pro_model, product_adapter, root.getContext().getApplicationContext());
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (check == 1)
-                        swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(root.getContext().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        if (check == 1)
+                            swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(root.getContext().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
