@@ -65,12 +65,12 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
     private static List<String> idList = new ArrayList<>();
     private static List<String> shipping_id = new ArrayList<>();
     private double del_ch = 0, Total = 0, gr_t = 0, pro_balance, commission_balance, fund_balance;
-    private static String mobileNO = "", trnID = "", pay_type = "", disTK = "0", subTK, totalTK;
+    private static String mobileNO = "", trnID = "", pay_type = "", disTK = "0", subTK, totalTK,amount_tk;
     private static String username, pass;
     private EditText firstname_ed, phone_ed, email_ed, address_ed, password_ed, con_password_ed;
     private View dialog_view;
     private View signin_view, singup_view;
-    private EditText phone_n, trn_n;
+    private EditText phone_n, trn_n,amount;
     private String districtid = "", session = "", id = "", thana_id = "";
     private int coupon_check = 0, otp = 0;
     private ProgressDialog progressDialog, progress;
@@ -207,6 +207,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
                 phone_n = dialog_view.findViewById(R.id.phone_di);
                 trn_n = dialog_view.findViewById(R.id.trnid);
+                amount = dialog_view.findViewById(R.id.amount);
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Nagad");
                 dialogBuilder.setMessage("+8801747666362");
@@ -215,16 +216,19 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 if (pay_type != null && pay_type.equals("nagad")) {
                     phone_n.setText(mobileNO);
                     trn_n.setText(trnID);
+                    amount.setText(amount_tk);
                 }
                 dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
                     dialog.cancel();
                     mobileNO = "";
                     trnID = "";
+                    amount_tk="";
                     nagad_rd.setSelected(false);
                 });
                 dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
                     mobileNO = phone_n.getText().toString();
                     trnID = trn_n.getText().toString();
+                    amount_tk = amount.getText().toString();
                     pay_type = "nagad";
                 });
                 dialogBuilder.show();
@@ -237,6 +241,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
                 phone_n = dialog_view.findViewById(R.id.phone_di);
                 trn_n = dialog_view.findViewById(R.id.trnid);
+                amount = dialog_view.findViewById(R.id.amount);
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Rocket");
                 dialogBuilder.setMessage("+8801747666362");
@@ -245,16 +250,19 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 if (pay_type != null && pay_type.equals("rocket")) {
                     phone_n.setText(mobileNO);
                     trn_n.setText(trnID);
+                    amount.setText(amount_tk);
                 }
                 dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
                     dialog.cancel();
                     mobileNO = "";
                     trnID = "";
+                    amount_tk="";
                     rocket_rd.setSelected(false);
                 });
                 dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
                     mobileNO = phone_n.getText().toString();
                     trnID = trn_n.getText().toString();
+                    amount_tk = amount.getText().toString();
                     pay_type = "rocket";
                 });
                 dialogBuilder.show();
@@ -267,6 +275,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
                 phone_n = dialog_view.findViewById(R.id.phone_di);
                 trn_n = dialog_view.findViewById(R.id.trnid);
+                amount = dialog_view.findViewById(R.id.amount);
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Bkash");
                 dialogBuilder.setMessage("+8801714654003");
@@ -275,16 +284,19 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 if (pay_type != null && pay_type.equals("bkash")) {
                     phone_n.setText(mobileNO);
                     trn_n.setText(trnID);
+                    amount.setText(amount_tk);
                 }
                 dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
                     dialog.cancel();
                     mobileNO = "";
                     trnID = "";
+                    amount_tk="";
                     bkash_rd.setSelected(false);
                 });
                 dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
                     mobileNO = phone_n.getText().toString();
                     trnID = trn_n.getText().toString();
+                    amount_tk = amount.getText().toString();
                     pay_type = "bkash";
                 });
                 dialogBuilder.show();
@@ -620,11 +632,11 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         session = homeViewModel.getSession(checkout.this);
         String sql1 = "INSERT INTO `invoices` (`invoice_id`,`delivery_id`,`guest_id`," +
                 "`coupon_id`,`delivery_charge`,`payment_type`,`mobile_acc`,`trans_id`," +
-                "`discount`,`sub_total`,`grand_total`,`session_id`,`status`" +
+                "`discount`,`sub_total`,`grand_total`,amount,`session_id`,`status`" +
                 ") VALUES ('";
         String sql2 = "','" + response + "','" + gid + "','" + id + "','" + del_ch + "','" + pay_type + "'," +
                 "'" + mobileNO + "','" + trnID + "','" + disTK + "'," +
-                "'" + subTK + "','" + totalTK + "'," +
+                "'" + subTK + "','" + totalTK + "','"+amount_tk+"'," +
                 "'" + session + "','0')";
         operation.invoice_proccess(context, sql1, sql2, progressDialog, id, subTK, disTK, String.valueOf(del_ch), grnT.getText().toString(), pay_type);
 

@@ -178,28 +178,20 @@ public class invoice extends AppCompatActivity {
         try {
             homeViewModel = new HomeViewModel();
 //            String session = homeViewModel.getSession(invoice.this);
-            String sql = "SELECT grand_total AS 'image',created_at AS 'id',payment_type AS 'category_name' FROM invoices WHERE invoice_id = '"+invoice_s+"'";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.CAT_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                JSONArray result = jsonObject.getJSONArray(config.RESULT);
-                                JSONObject collegeData = result.getJSONObject(0);
-                                payment.setText(collegeData.getString(config.CAT_NAME));
-                                order_date.setText(collegeData.getString(config.CAT_ID));
-                                gr_total.setText(collegeData.getString(config.CAT_IMG));
-                            }catch (Exception e){
-                            }
+            String sql = "SELECT grand_total AS 'one',created_at AS 'two',payment_type AS 'three',amount AS 'four' FROM invoices WHERE invoice_id = '"+invoice_s+"'";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.FOUR_DMS,
+                    response -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+                            JSONObject collegeData = result.getJSONObject(0);
+                            payment.setText(collegeData.getString(config.THREE));
+                            order_date.setText(collegeData.getString(config.TWO));
+                            gr_total.setText(collegeData.getString(config.ONE));
+                            //pa.setText(collegeData.getString(config.FOUR));
+                        }catch (Exception e){
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(invoice.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(invoice.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
