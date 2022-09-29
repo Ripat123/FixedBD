@@ -38,7 +38,8 @@ import java.util.Map;
 
 public class invoice extends AppCompatActivity {
 
-    private TextView invoice,order_date,payment,delivery_d,total,discount,delivery_ch,gr_total;
+    private TextView invoice,order_date,payment,delivery_d,total,discount,delivery_ch,gr_total,
+    paid,due;
     private Button hbtn;
     private HomeViewModel homeViewModel;
     private DoConfig config = new DoConfig();
@@ -63,17 +64,16 @@ public class invoice extends AppCompatActivity {
         discount = findViewById(R.id.dis_inid);
         delivery_ch = findViewById(R.id.delivery_inid);
         gr_total = findViewById(R.id.grand_inid);
+        paid = findViewById(R.id.paid_inid);
+        due = findViewById(R.id.due_inid);
         hbtn = findViewById(R.id.shop_btn);
         recyclerView = findViewById(R.id.inv_pro);
         initpro_check();
         setView();
         getdate();
-        hbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(invoice.this, MainActivity.class));
-                finish();
-            }
+        hbtn.setOnClickListener(v -> {
+            startActivity(new Intent(invoice.this, MainActivity.class));
+            finish();
         });
 
 
@@ -144,20 +144,11 @@ public class invoice extends AppCompatActivity {
                     "`product_productinfo` ON `shopping_carts`.`product_id` = `product_productinfo`.id WHERE " +
                     "`shopping_carts`.`session_id` = '"+session+"'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.CHECK_PRO_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            operation.showCheck_data(response,checkout_pro_adapter);
-                            total.setText(sub);
+                    response -> {
+                        operation.showCheck_data(response,checkout_pro_adapter);
+                        total.setText(sub);
 //                            gr_total.setText(total_s);
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(invoice.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(invoice.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -188,13 +179,16 @@ public class invoice extends AppCompatActivity {
                             payment.setText(collegeData.getString(config.THREE));
                             order_date.setText(collegeData.getString(config.TWO));
                             gr_total.setText(collegeData.getString(config.ONE));
-                            //pa.setText(collegeData.getString(config.FOUR));
+                            paid.setText(collegeData.getString(config.FOUR));
+                            double due_ = Double.parseDouble(collegeData.getString(config.ONE)) -
+                                    Double.parseDouble(collegeData.getString(config.FOUR));
+                            due.setText(String.valueOf(due_));
                         }catch (Exception e){
                         }
                     }, error -> Toast.makeText(invoice.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -212,6 +206,7 @@ public class invoice extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(invoice.this,MainActivity.class));
+        finish();
     }
 
     private void createNotificationChannel() {
