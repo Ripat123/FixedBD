@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -30,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.card.MaterialCardView;
 import com.sbitbd.fixedbd.Adapter.pro_model;
 import com.sbitbd.fixedbd.Adapter.product_adapter;
 import com.sbitbd.fixedbd.Config.DoConfig;
@@ -63,7 +65,7 @@ public class product_descripton extends AppCompatActivity {
     List<sliderModel> modelList = new ArrayList<>();
     String name, price, id, disprice;
     String image;
-    private TextView pro_name, pro_price, pro_dis, min_quant, stock_status, menu_txt, quantity;
+    private TextView pro_name, pro_price, pro_dis, min_quant, stock_status, menu_txt, quantity,call_num;
     private WebView pro_discrip;
     private Button pro_view_btn, pro_add_btn, pro_wish_btn, back_btn, decre, incre;
     private ImageBadgeView cart_btn;
@@ -81,6 +83,7 @@ public class product_descripton extends AppCompatActivity {
     private AutoCompleteTextView color_a, size_a;
     private int min, Max, buy_earn;
     private ProgressDialog progressDialog;
+    private MaterialCardView call;
     private product_controller product_controller = new product_controller();
 
     @Override
@@ -120,6 +123,8 @@ public class product_descripton extends AppCompatActivity {
         decre = findViewById(R.id.pro_quant_decre);
         color_a = findViewById(R.id.color_t);
         size_a = findViewById(R.id.size_t);
+        call = findViewById(R.id.call);
+        call_num = findViewById(R.id.call_num);
 
         recyclerView.setNestedScrollingEnabled(false);
         GridLayoutManager manager = new GridLayoutManager(product_descripton.this, 2);
@@ -128,6 +133,13 @@ public class product_descripton extends AppCompatActivity {
         pro_dis.setPaintFlags(pro_dis.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         setcomponent();
         count();
+        call.setOnClickListener(view -> {
+            if (!call_num.getText().toString().equals(getString(R.string.app_name))) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" +call_num.getText().toString()));
+                startActivity(intent);
+            }
+        });
         cart_btn.setOnClickListener(v -> startActivity(new Intent(product_descripton.this, sh_cart.class)));
         back_btn.setOnClickListener(v -> onBackPressed());
         pro_view_btn.setOnClickListener(v -> {
@@ -547,7 +559,7 @@ public class product_descripton extends AppCompatActivity {
                     }, error -> Toast.makeText(product_descripton.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -587,12 +599,14 @@ public class product_descripton extends AppCompatActivity {
         try {
             String sql = "SELECT `product_productinfo`.`id`,`product_productinfo`.`product_name`," +
                     "`product_productinfo`.`sale_price`,`product_productinfo`.`discount_price`," +
-                    "`product_productinfo`.`current_price`,`product_productinfo`.`image` " +
-                    "FROM `product_productinfo` WHERE product_productinfo.category_id = '" + id + "'";
+                    "`product_productinfo`.`current_price`,`product_productinfo`.`image`,product_category.number as 'size' " +
+                    "FROM `product_productinfo` inner join product_category on product_productinfo." +
+                    "category_id=product_category.id WHERE product_productinfo.category_id = '" + id + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.PRO_DATA,
                     response -> {
                         if (!response.equals("1")) {
                             homeViewModel.showProJSON(response, cart_model, product_adapter, product_descripton.this);
+                            call_num.setText(product_adapter.userList.get(0).getSize());
                         } else {
                             Toast.makeText(product_descripton.this, "Not found", Toast.LENGTH_SHORT).show();
                         }

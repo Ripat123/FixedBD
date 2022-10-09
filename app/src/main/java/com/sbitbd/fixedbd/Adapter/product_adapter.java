@@ -24,7 +24,7 @@ import java.util.List;
 
 public class product_adapter extends RecyclerView.Adapter<product_adapter.viewHolder> {
 
-    private List<pro_model> userList;
+    public List<pro_model> userList;
     private Context context;
     private DoConfig config = new DoConfig();
 

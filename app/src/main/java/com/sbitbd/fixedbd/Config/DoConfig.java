@@ -106,46 +106,39 @@ public class DoConfig {
     public static final String SIX = "six";
     private List<order_model> order_modelsList = new ArrayList<>();
 
-    public String encrypt(String value) {
-        try {
-            String key, initVector;
-            key = "Jar12345Jar12345";
-            initVector = "RandomInitVector";
-            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(1, skeySpec, iv);
-            byte[] encrypted = cipher.doFinal(value.getBytes());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return Base64.getEncoder().encodeToString(encrypted);
-            } else
-                return new String(encrypted);
-//            encodeBase64String(encrypted);getEncoder().encodeToString(encrypted);
-        } catch (Exception ex) {
-        }
-        return null;
-    }
+//    public String encrypt(String value) {
+//        try {
+//            String key, initVector;
+//            key = "Jar12345Jar12345";
+//            initVector = "RandomInitVector";
+//            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+//            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+//            cipher.init(1, skeySpec, iv);
+//            byte[] encrypted = cipher.doFinal(value.getBytes());
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                return Base64.getEncoder().encodeToString(encrypted);
+//            } else
+//                return new String(encrypted);
+////            encodeBase64String(encrypted);getEncoder().encodeToString(encrypted);
+//        } catch (Exception ex) {
+//        }
+//        return null;
+//    }
 
     public void OrderData(Context context, String query, RecyclerView recyclerView, ConstraintLayout materialCardView) {
         try {
             String sql = query;
             StringRequest stringRequest = new StringRequest(Request.Method.POST, ORDER_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1") && !response.equals("")) {
-                                showOrderJson(response, recyclerView, context);
-                            } else
-                                materialCardView.setVisibility(View.VISIBLE);
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    materialCardView.setVisibility(View.VISIBLE);
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> {
+                        if (!response.equals("1") && !response.equals("")) {
+                            showOrderJson(response, recyclerView, context);
+                        } else
+                            materialCardView.setVisibility(View.VISIBLE);
+                    }, error -> {
+                        materialCardView.setVisibility(View.VISIBLE);
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -163,30 +156,21 @@ public class DoConfig {
         try {
             String sql = "SELECT id FROM `guest` WHERE id = '1'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1")) {
-                                String sql1 = "SELECT `invoices`.`invoice_id`,`shopping_carts`.`product_id`,`product_productinfo`.`product_name`," +
-                                        "`invoices`.`created_at`,`invoices`.`status` FROM `invoices` INNER JOIN `shopping_carts` ON `invoices`.`session_id` = " +
-                                        "`shopping_carts`.`session_id` INNER JOIN `product_productinfo` ON `shopping_carts`.`product_id` = " +
-                                        "`product_productinfo`.`id` WHERE `invoices`.`guest_id` = '" + response + "' AND `invoices`.`session_id` LIKE '" + id + "%'";
-                                OrderData(context, sql1, recyclerView, materialCardView);
-                            } else
-                                Toast.makeText(context, "Please Sign in", Toast.LENGTH_LONG).show();
+                    response -> {
+                        if (!response.equals("1")) {
+                            String sql1 = "SELECT `invoices`.`invoice_id`,`shopping_carts`.`product_id`,`product_productinfo`.`product_name`," +
+                                    "`invoices`.`created_at`,`invoices`.`status` FROM `invoices` INNER JOIN `shopping_carts` ON `invoices`.`session_id` = " +
+                                    "`shopping_carts`.`session_id` INNER JOIN `product_productinfo` ON `shopping_carts`.`product_id` = " +
+                                    "`product_productinfo`.`id` WHERE `invoices`.`guest_id` = '" + response + "' AND `invoices`.`session_id` LIKE '" + id + "%'";
+                            OrderData(context, sql1, recyclerView, materialCardView);
+                        } else
+                            Toast.makeText(context, "Please Sign in", Toast.LENGTH_LONG).show();
 
 
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(QUERY, sql);
                     return params;
                 }
@@ -236,19 +220,10 @@ public class DoConfig {
     public void Update(Context context, String query) {
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, ORDER_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1")) {
-                            }
+                    response -> {
+                        if (!response.equals("1")) {
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();

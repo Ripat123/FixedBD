@@ -2,6 +2,7 @@ package com.sbitbd.fixedbd.ui.checkout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,11 +51,12 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
     private RecyclerView recyclerView;
     //private checkout_pro_model checkout_pro_model;
     private checkout_pro_adapter checkout_pro_adapter;
-    private RadioButton cash_rd, bkash_rd, rocket_rd, nagad_rd, pro_bal_id, com_bal_id, fund_id,without_pay_id;
+    private RadioButton cash_rd, bkash_rd, rocket_rd, nagad_rd, pro_bal_id, com_bal_id, fund_id,without_pay_id
+            ,other_rd,bank_rd;
     private DoConfig config;
     private HomeViewModel homeViewModel = new HomeViewModel();
     private operation operation = new operation();
-    private TextView subT, disT, deliT, grnT;
+    private TextView subT, disT, deliT, grnT,paid_id;
     private AutoCompleteTextView country, district, thana;
     private Button submit, promo_btn;
     private EditText first_name, Phone, Email, fulladdress, promo_field;
@@ -74,6 +76,8 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
     private String districtid = "", session = "", id = "", thana_id = "";
     private int coupon_check = 0, otp = 0;
     private ProgressDialog progressDialog, progress;
+    private checkoutViewmodel viewmodel;
+    private payment payment= new payment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +88,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         initpro_check();
         showDistrict();
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(checkout.this,
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(checkout.this,
                 R.layout.item_name, model);
         district.setAdapter(dataAdapter);
 
@@ -101,10 +105,13 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         bkash_rd = findViewById(R.id.bkash_id);
         rocket_rd = findViewById(R.id.rocket_id);
         nagad_rd = findViewById(R.id.nagad_id);
+        other_rd = findViewById(R.id.other_id);
+        bank_rd = findViewById(R.id.bank_id);
         subT = findViewById(R.id.total_id);
         disT = findViewById(R.id.dis_id);
         deliT = findViewById(R.id.delivery_id);
         grnT = findViewById(R.id.grand_id);
+        paid_id = findViewById(R.id.paid_id);
 //        country = findViewById(R.id.ctry);
         district = findViewById(R.id.district);
         thana = findViewById(R.id.thana);
@@ -124,7 +131,12 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
         phone_n = dialog_view.findViewById(R.id.phone_di);
         trn_n = dialog_view.findViewById(R.id.trnid);
         district.setOnItemClickListener(this);
-
+        viewmodel = new ViewModelProvider(this).get(checkoutViewmodel.class);
+        viewmodel.getPaymentData(checkout.this).observe(this,payment -> {
+            if (payment != null){
+                this.payment = payment;
+            }
+        });
         TextWatcher watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -196,9 +208,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Promotion");
                 dialogBuilder.setMessage("Already Applied");
-                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
-                    dialog.cancel();
-                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> dialog.cancel());
                 dialogBuilder.show();
             }
         });
@@ -210,8 +220,8 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 amount = dialog_view.findViewById(R.id.amount);
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Nagad");
-                dialogBuilder.setMessage("+8801747666362");
-
+                dialogBuilder.setMessage(payment.getNagad());
+                dialogBuilder.setCancelable(false);
                 dialogBuilder.setView(dialog_view);
                 if (pay_type != null && pay_type.equals("nagad")) {
                     phone_n.setText(mobileNO);
@@ -223,12 +233,15 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     mobileNO = "";
                     trnID = "";
                     amount_tk="";
-                    nagad_rd.setSelected(false);
+                    paid_id.setText("0");
+                    nagad_rd.setChecked(false);
                 });
                 dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
                     mobileNO = phone_n.getText().toString();
                     trnID = trn_n.getText().toString();
                     amount_tk = amount.getText().toString();
+                    paid_id.setText(amount_tk);
+                    grnT.setText(String.valueOf(Double.parseDouble(totalTK) - Double.parseDouble(amount_tk)));
                     pay_type = "nagad";
                 });
                 dialogBuilder.show();
@@ -244,8 +257,8 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 amount = dialog_view.findViewById(R.id.amount);
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Rocket");
-                dialogBuilder.setMessage("+8801747666362");
-
+                dialogBuilder.setMessage(payment.getRocket());
+                dialogBuilder.setCancelable(false);
                 dialogBuilder.setView(dialog_view);
                 if (pay_type != null && pay_type.equals("rocket")) {
                     phone_n.setText(mobileNO);
@@ -257,12 +270,15 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     mobileNO = "";
                     trnID = "";
                     amount_tk="";
-                    rocket_rd.setSelected(false);
+                    paid_id.setText("0");
+                    rocket_rd.setChecked(false);
                 });
                 dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
                     mobileNO = phone_n.getText().toString();
                     trnID = trn_n.getText().toString();
                     amount_tk = amount.getText().toString();
+                    paid_id.setText(amount_tk);
+                    grnT.setText(String.valueOf(Double.parseDouble(totalTK) - Double.parseDouble(amount_tk)));
                     pay_type = "rocket";
                 });
                 dialogBuilder.show();
@@ -278,8 +294,8 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                 amount = dialog_view.findViewById(R.id.amount);
                 MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
                 dialogBuilder.setTitle("Bkash");
-                dialogBuilder.setMessage("+8801714654003");
-
+                dialogBuilder.setMessage(payment.getBkash());
+                dialogBuilder.setCancelable(false);
                 dialogBuilder.setView(dialog_view);
                 if (pay_type != null && pay_type.equals("bkash")) {
                     phone_n.setText(mobileNO);
@@ -291,12 +307,15 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     mobileNO = "";
                     trnID = "";
                     amount_tk="";
-                    bkash_rd.setSelected(false);
+                    paid_id.setText("0");
+                    bkash_rd.setChecked(false);
                 });
                 dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
                     mobileNO = phone_n.getText().toString();
                     trnID = trn_n.getText().toString();
                     amount_tk = amount.getText().toString();
+                    paid_id.setText(amount_tk);
+                    grnT.setText(String.valueOf(Double.parseDouble(totalTK) - Double.parseDouble(amount_tk)));
                     pay_type = "bkash";
                 });
                 dialogBuilder.show();
@@ -305,9 +324,109 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 
         });
         cash_rd.setOnClickListener(v -> {
-            pay_type = "cash";
-            mobileNO = "";
-            trnID = "";
+            try {
+                dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.payment_dialog, null);
+                phone_n = dialog_view.findViewById(R.id.phone_di);
+                trn_n = dialog_view.findViewById(R.id.trnid);
+                amount = dialog_view.findViewById(R.id.amount);
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Cash on Delivery");
+                dialogBuilder.setMessage("Bkash: "+payment.getBkash()+"\nRocket: "+payment.getRocket()
+                +"\nNagad: "+payment.getNagad());
+                dialogBuilder.setCancelable(false);
+                dialogBuilder.setView(dialog_view);
+                if (pay_type != null && pay_type.equals("cash")) {
+                    phone_n.setText(mobileNO);
+                    trn_n.setText(trnID);
+                    amount.setText(amount_tk);
+                }
+                dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.cancel();
+                    mobileNO = "";
+                    trnID = "";
+                    amount_tk="";
+                    paid_id.setText("0");
+                    cash_rd.setChecked(false);
+                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    mobileNO = phone_n.getText().toString();
+                    trnID = trn_n.getText().toString();
+                    amount_tk = amount.getText().toString();
+                    paid_id.setText(amount_tk);
+                    grnT.setText(String.valueOf(Double.parseDouble(totalTK) - Double.parseDouble(amount_tk)));
+                    pay_type = "cash";
+                });
+                dialogBuilder.show();
+            } catch (Exception e) {
+            }
+        });
+        bank_rd.setOnClickListener(view -> {
+            try {
+                dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.bank_dialog_lay, null);
+                EditText other = dialog_view.findViewById(R.id.bank_act);
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Bank");
+                other.setText(payment.getBank());
+                dialogBuilder.setView(dialog_view);
+                dialogBuilder.setCancelable(false);
+//                if (pay_type != null && pay_type.equals("Other")) {
+//                    phone_n.setText(mobileNO);
+//                    trn_n.setText(trnID);
+//                    amount.setText(amount_tk);
+//                }
+//                dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
+//                    dialog.cancel();
+//                    mobileNO = "";
+//                    trnID = "";
+//                    amount_tk="";
+//                    paid_id.setText("0");
+//                    bkash_rd.setChecked(false);
+//                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    //mobileNO = phone_n.getText().toString();
+                    //trnID = trn_n.getText().toString();
+                    amount_tk = "0";
+                    paid_id.setText("0");
+                    grnT.setText(String.valueOf(Double.parseDouble(totalTK) - Double.parseDouble(amount_tk)));
+                    pay_type = "bank";
+                });
+                dialogBuilder.show();
+            } catch (Exception e) {
+            }
+        });
+        other_rd.setOnClickListener(view -> {
+            try {
+                dialog_view = LayoutInflater.from(checkout.this).inflate(R.layout.other_dialog_lay, null);
+                EditText other = dialog_view.findViewById(R.id.other_act);
+                MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(checkout.this);
+                dialogBuilder.setTitle("Others");
+                other.setText(payment.getOther());
+                dialogBuilder.setView(dialog_view);
+                dialogBuilder.setCancelable(false);
+//                if (pay_type != null && pay_type.equals("Other")) {
+//                    phone_n.setText(mobileNO);
+//                    trn_n.setText(trnID);
+//                    amount.setText(amount_tk);
+//                }
+//                dialogBuilder.setNegativeButton("Cancel", (dialog, which) -> {
+//                    dialog.cancel();
+//                    mobileNO = "";
+//                    trnID = "";
+//                    amount_tk="";
+//                    paid_id.setText("0");
+//                    bkash_rd.setChecked(false);
+//                });
+                dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                    //mobileNO = phone_n.getText().toString();
+                    //trnID = trn_n.getText().toString();
+                    amount_tk = "0";
+                    paid_id.setText("0");
+                    grnT.setText(String.valueOf(Double.parseDouble(totalTK) - Double.parseDouble(amount_tk)));
+                    pay_type = "Other";
+                });
+                dialogBuilder.show();
+            } catch (Exception e) {
+            }
         });
         without_pay_id.setOnClickListener(view -> {
             pay_type = "WithoutPayment";
@@ -446,7 +565,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }, error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -470,7 +589,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     response -> showDistrictList(response), error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -587,7 +706,8 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 //                return;
 //            }
             if (!cash_rd.isSelected() && !pay_type.equals("cash") && !pay_type.equals("Product Balance")
-                    && !pay_type.equals("Commision Balance") && !pay_type.equals("Add Funds Balance") && !pay_type.equals("WithoutPayment")) {
+                    && !pay_type.equals("Commision Balance") && !pay_type.equals("Add Funds Balance") &&
+                    !pay_type.equals("WithoutPayment") && !pay_type.equals("bank") && !pay_type.equals("Other")) {
                 if (mobileNO.equals("")) {
                     Toast.makeText(checkout.this, "Empty transaction Mobile No", Toast.LENGTH_LONG).show();
                     Toast.makeText(checkout.this, "Please Select Payment Method", Toast.LENGTH_LONG).show();
@@ -630,6 +750,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
 
     public void invoice_query(String response, String gid, Context context, ProgressDialog progressDialog) {
         session = homeViewModel.getSession(checkout.this);
+        totalTK = grnT.getText().toString();
         String sql1 = "INSERT INTO `invoices` (`invoice_id`,`delivery_id`,`guest_id`," +
                 "`coupon_id`,`delivery_charge`,`payment_type`,`mobile_acc`,`trans_id`," +
                 "`discount`,`sub_total`,`grand_total`,amount,`session_id`,`status`" +
@@ -662,11 +783,11 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                         }
                     }, error -> {
                         progressDialog.dismiss();
-                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -708,7 +829,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, username);
                     params.put(config.PRO_SIZE, pass);
                     return params;
@@ -927,7 +1048,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }, error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, query);
                     return params;
                 }
@@ -1019,7 +1140,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }, error -> Toast.makeText(checkout.this, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, query);
                     return params;
                 }
@@ -1063,7 +1184,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
             thanamodel.clear();
             thana.setText("");
             showThana(districtid);
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(checkout.this,
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(checkout.this,
                     R.layout.item_name, thanamodel);
             thana.setAdapter(dataAdapter);
             totalTK = grnT.getText().toString();
@@ -1110,7 +1231,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.FIRST_N, firstname + " " + lastname);
                     params.put(config.LAST_N, "");
                     params.put(config.EMAIL, email);
@@ -1157,7 +1278,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -1202,7 +1323,7 @@ public class checkout extends AppCompatActivity implements AdapterView.OnItemCli
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }

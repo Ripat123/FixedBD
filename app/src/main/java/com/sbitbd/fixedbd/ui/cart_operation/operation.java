@@ -101,7 +101,7 @@ public class operation {
         try {
             String sql = "UPDATE `productstocks` SET `quentity` = `quentity` - '"+quant+"' WHERE `product_id` " +
                     "= '"+id+"' AND `size` = '"+size+"' AND `color` = '"+color+"'";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -119,7 +119,7 @@ public class operation {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -164,7 +164,7 @@ public class operation {
         try {
             String sql = "INSERT INTO `shopping_carts` (`product_id`,`session_id`,`status`,`quantity`,color,size," +
                     "`created_at`) VALUES ('" + proID + "','" + Session + "','0','" + quant + "','" + color + "','" + size + "','" + date + "')";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -184,7 +184,7 @@ public class operation {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -207,12 +207,12 @@ public class operation {
         cart_model cart_model;
         try {
             JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+            JSONArray result = jsonObject.getJSONArray(DoConfig.RESULT);
             for (int i = 0; i <= result.length(); i++) {
                 JSONObject collegeData = result.getJSONObject(i);
-                name = collegeData.getString(config.PRO_NAME);
-                img = collegeData.getString(config.PRO_IMAGE);
-                price = Double.parseDouble(collegeData.getString(config.PRO_CURRENT_PRICE));
+                name = collegeData.getString(DoConfig.PRO_NAME);
+                img = collegeData.getString(DoConfig.PRO_IMAGE);
+                price = Double.parseDouble(collegeData.getString(DoConfig.PRO_CURRENT_PRICE));
                 double d_quant = Double.parseDouble(quant);
                 double total = price * d_quant;
 //                cart_model = new cart_model("Inspiron 15","150 x 1","150","1", R.drawable.sbit);
@@ -229,7 +229,7 @@ public class operation {
         try {
             String sql = "SELECT `product_productinfo`.`product_name`,`product_productinfo`.`current_price`," +
                     "`product_productinfo`.`image` FROM `product_productinfo` WHERE `product_productinfo`.id = '" + id + "'";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.CART_DATA,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.CART_DATA,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -252,7 +252,7 @@ public class operation {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -273,15 +273,15 @@ public class operation {
         pro_model cat_models;
         try {
             JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+            JSONArray result = jsonObject.getJSONArray(DoConfig.RESULT);
             for (int i = 0; i <= result.length(); i++) {
                 JSONObject collegeData = result.getJSONObject(i);
-                proName = collegeData.getString(config.PRO_NAME);
-                size = collegeData.getString(config.CAT_NAME);
-                price = collegeData.getString(config.PRO_DISCOUNT_PRICE);
-                dis_price = collegeData.getString(config.EMAIL);
-                dis_val = collegeData.getString(config.PRO_CURRENT_PRICE);
-                image = collegeData.getString(config.PRO_IMAGE);
+                proName = collegeData.getString(DoConfig.PRO_NAME);
+                size = collegeData.getString(DoConfig.CAT_NAME);
+                price = collegeData.getString(DoConfig.PRO_DISCOUNT_PRICE);
+                dis_price = collegeData.getString(DoConfig.EMAIL);
+                dis_val = collegeData.getString(DoConfig.PRO_CURRENT_PRICE);
+                image = collegeData.getString(DoConfig.PRO_IMAGE);
 
                 cat_models = new pro_model(image, proName, size, price, dis_val, id, dis_price);
                 return cat_models;
@@ -316,7 +316,7 @@ public class operation {
         try {
             String sql = "UPDATE shopping_carts SET quantity = '" + quantity + "' WHERE session_id = " +
                     "'" + Session + "' AND product_id = '" + proID + "' AND color = '" + color + "' AND size = '" + size + "'";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -334,7 +334,7 @@ public class operation {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -375,7 +375,7 @@ public class operation {
         try {
             String sql = "DELETE FROM shopping_carts WHERE session_id = " +
                     "'" + ses + "' AND product_id = '" + proID + "' AND color = '"+color+"' AND size = '"+size+"'";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -393,7 +393,7 @@ public class operation {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -411,7 +411,7 @@ public class operation {
         try {
             String sql = "insert into buynownotification (user_id,phone,product_id,date) values('"+random()+"'" +
                     ",'"+phone+"','"+proIDs+"','"+getCreatedDate()+"')";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT,
                     response -> {
                         if (!response.equals("1")) {
                             Toast.makeText(context, response, Toast.LENGTH_LONG).show();
@@ -420,7 +420,7 @@ public class operation {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -452,14 +452,14 @@ public class operation {
         List<String> shipID = new ArrayList<>();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+            JSONArray result = jsonObject.getJSONArray(DoConfig.RESULT);
             for (int i = 0; i <= result.length(); i++) {
                 JSONObject collegeData = result.getJSONObject(i);
-                name = collegeData.getString(config.PRO_NAME);
-                quant = collegeData.getString(config.CAT_NAME);
-                id = collegeData.getString(config.CAT_ID);
-                price = collegeData.getString(config.PRO_CURRENT_PRICE);
-                shipping = collegeData.getString(config.SHIPPING);
+                name = collegeData.getString(DoConfig.PRO_NAME);
+                quant = collegeData.getString(DoConfig.CAT_NAME);
+                id = collegeData.getString(DoConfig.CAT_ID);
+                price = collegeData.getString(DoConfig.PRO_CURRENT_PRICE);
+                shipping = collegeData.getString(DoConfig.SHIPPING);
                 shipID.add(shipping);
                 double quantity = Double.parseDouble(quant);
                 double cur_price = Double.parseDouble(price);
@@ -477,10 +477,10 @@ public class operation {
         List<String> shipID = new ArrayList<>();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+            JSONArray result = jsonObject.getJSONArray(DoConfig.RESULT);
             for (int i = 0; i <= result.length(); i++) {
                 JSONObject collegeData = result.getJSONObject(i);
-                id = collegeData.getString(config.CAT_ID);
+                id = collegeData.getString(DoConfig.CAT_ID)+"->"+collegeData.getString(DoConfig.PRO_NAME);
                 shipID.add(id);
             }
         } catch (Exception e) {
@@ -491,34 +491,25 @@ public class operation {
     public void insertuser(Context context, String firstname, String lastname, String phone, String email, String password, String address) {
         try {
             homeViewModel = new HomeViewModel();
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GUEST_REG,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (!response.equals("1")) {
-                                Toast.makeText(context, response, Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(context, "Successful", Toast.LENGTH_LONG).show();
-                                homeViewModel.insertuser(context, firstname + " " + lastname, phone, email, password, "");
-                                context.startActivity(new Intent(context, LoginActivity.class));
-                            }
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.GUEST_REG,
+                    response -> {
+                        if (!response.equals("1")) {
+                            Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "Successful", Toast.LENGTH_LONG).show();
+                            homeViewModel.insertuser(context, firstname + " " + lastname, phone, email, password, "");
+                            context.startActivity(new Intent(context, LoginActivity.class));
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.FIRST_N, firstname+ " "+ lastname);
-                    params.put(config.LAST_N, "");
-                    params.put(config.EMAIL, email);
-                    params.put(config.PHONE, phone);
-                    params.put(config.ADDRESS, address);
-                    params.put(config.PASS, password);
+                    Map<String, String> params = new HashMap<>();
+                    params.put(DoConfig.FIRST_N, firstname+ " "+ lastname);
+                    params.put(DoConfig.LAST_N, "");
+                    params.put(DoConfig.EMAIL, email);
+                    params.put(DoConfig.PHONE, phone);
+                    params.put(DoConfig.ADDRESS, address);
+                    params.put(DoConfig.PASS, password);
                     return params;
                 }
             };
@@ -550,52 +541,45 @@ public class operation {
         try {
             String sql2 = "SELECT SUBSTR(MAX(invoice_id),5,2) AS 'invoice_id', SUBSTR(CURRENT_DATE(),9,2) AS 'product_name'," +
                     "DATE_FORMAT(CURDATE(), '%y%m%d') AS 'created_at',SUBSTR(MAX(invoice_id),7,5) AS 'status' FROM invoices";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.ORDER_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                String id = createInvoiceID(response);
-                                switch (pay_type){
-                                    case "Product Balance":
-                                        update_pay(context,"INSERT INTO `member_product_balance`(`date`, `member_id`, `type`, " +
-                                                "`amount`, `withdraw`, `number`, `details`) VALUES(" +
-                                                "'" + config.getCreateDate() + "','" + homeViewModel.getSellerID(context) + "'," +
-                                                "'','0.00','" + totalT + "','','')");
-                                        break;
-                                    case "Commision Balance":
-                                        update_pay(context,"INSERT INTO `order_customer_commision`(`date`, `member_id`, `type`, " +
-                                                "`commision_balance`, `withdraw`,invoice_id, `details`) VALUES(" +
-                                                "'" + config.getCreateDate() + "','" + homeViewModel.getSellerID(context) + "','','0.00" +
-                                                "','" + totalT + "','"+id+"','')");
-                                        break;
-                                    case "Add Funds Balance":
-                                        update_pay(context,"INSERT INTO `addfunds`(`date`, `member_id`, `customer_id`, `type`, " +
-                                                "`amount`, `withdraw`, `details`, `status`) VALUES(" +
-                                                "'" + config.getCreateDate() + "','" + homeViewModel.getSellerID(context) + "','" + homeViewModel.getGuestID(context) + "','','0.00" +
-                                                "','" + totalT + "','','')");
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.ORDER_DATA,
+                    response -> {
+                        try {
+                            String id = createInvoiceID(response);
+                            switch (pay_type){
+                                case "Product Balance":
+                                    update_pay(context,"INSERT INTO `member_product_balance`(`date`, `member_id`, `type`, " +
+                                            "`amount`, `withdraw`, `number`, `details`) VALUES(" +
+                                            "'" + config.getCreateDate() + "','" + homeViewModel.getSellerID(context) + "'," +
+                                            "'','0.00','" + totalT + "','','')");
+                                    break;
+                                case "Commision Balance":
+                                    update_pay(context,"INSERT INTO `order_customer_commision`(`date`, `member_id`, `type`, " +
+                                            "`commision_balance`, `withdraw`,invoice_id, `details`) VALUES(" +
+                                            "'" + config.getCreateDate() + "','" + homeViewModel.getSellerID(context) + "','','0.00" +
+                                            "','" + totalT + "','"+id+"','')");
+                                    break;
+                                case "Add Funds Balance":
+                                    update_pay(context,"INSERT INTO `addfunds`(`date`, `member_id`, `customer_id`, `type`, " +
+                                            "`amount`, `withdraw`, `details`, `status`) VALUES(" +
+                                            "'" + config.getCreateDate() + "','" + homeViewModel.getSellerID(context) + "','" + homeViewModel.getGuestID(context) + "','','0.00" +
+                                            "','" + totalT + "','','')");
 
-                                        break;
-                                }
-                                String query = sql + id + sql1;
-                                addInvoice(context, query, progressDialog, couponid,subT,disT,delT,totalT);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                                progressDialog.dismiss();
+                                    break;
                             }
+                            String query = sql + id + sql1;
+                            addInvoice(context, query, progressDialog, couponid,subT,disT,delT,totalT);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            progressDialog.dismiss();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql2);
+                    Map<String, String> params = new HashMap<>();
+                    params.put(DoConfig.QUERY, sql2);
                     return params;
                 }
             };
@@ -611,25 +595,16 @@ public class operation {
 
     public void update_pay(Context context, String sql){
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if(!response.trim().equals("1")){
-                                Toast.makeText(context, "Payment update failed! "+response, Toast.LENGTH_SHORT).show();
-                            }
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT,
+                    response -> {
+                        if(!response.trim().equals("1")){
+                            Toast.makeText(context, "Payment update failed! "+response, Toast.LENGTH_SHORT).show();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -647,7 +622,7 @@ public class operation {
                               String disT,String delT,String totalT) {
         try {
             JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(config.RESULT);
+            JSONArray result = jsonObject.getJSONArray(DoConfig.RESULT);
             for (int i = 0; i <= result.length(); i++) {
                 JSONObject collegeData = result.getJSONObject(i);
                 config.Update(context, "UPDATE `shopping_carts` SET `status` = '1' WHERE " +
@@ -667,8 +642,8 @@ public class operation {
 //                dialogBuilder.show();
                 checkout checkout = new checkout();
                 Intent intent = new Intent(context, invoice.class);
-                intent.putExtra("invoice",collegeData.getString(config.PRO_SIZE));
-                intent.putExtra("delivery",reduce_date(collegeData.getString(config.CAT_ID)) + " to " + reduce_date(collegeData.getString(config.PRO_NAME)));
+                intent.putExtra("invoice",collegeData.getString(DoConfig.PRO_SIZE));
+                intent.putExtra("delivery",reduce_date(collegeData.getString(DoConfig.CAT_ID)) + " to " + reduce_date(collegeData.getString(DoConfig.PRO_NAME)));
                 intent.putExtra("sub",subT);
                 intent.putExtra("dis",disT);
                 intent.putExtra("del",delT);
@@ -691,29 +666,22 @@ public class operation {
         config = new DoConfig();
         String session = homeViewModel.getSession(context);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, config.INSERT_INVOICE,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (!response.equals("Could not Registered in online") && !response.equals("problem")) {
-                                Invoice_json(response, context, cuoponID, session,subT,disT,delT,totalT);
-                            } else {
-                                Toast.makeText(context, "in failed", Toast.LENGTH_LONG).show();
-                            }
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DoConfig.INSERT_INVOICE,
+                    response -> {
+                        progressDialog.dismiss();
+                        if (!response.equals("Could not Registered in online") && !response.equals("problem")) {
+                            Invoice_json(response, context, cuoponID, session,subT,disT,delT,totalT);
+                        } else {
+                            Toast.makeText(context, "in failed", Toast.LENGTH_LONG).show();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put(config.QUERY, sql);
+                    Map<String, String> params = new HashMap<>();
+                    params.put(DoConfig.QUERY, sql);
                     return params;
                 }
             };
@@ -732,7 +700,7 @@ public class operation {
         long id;
         try {
             JSONObject obj = new JSONObject(INid);
-            JSONArray result = obj.getJSONArray(config.RESULT);
+            JSONArray result = obj.getJSONArray(DoConfig.RESULT);
             JSONObject employee = result.getJSONObject(0);
             thisDate = employee.getString("pro_name");
             invoice_date = employee.getString("id");
@@ -741,22 +709,20 @@ public class operation {
             if (invoice_date.equals(thisDate)) {
                 id++;
                 if (id <= 9) {
-                    return (prefix + "0000" + "" + Long.toString(id));
+                    return (prefix + "000" + "" + id);
 
                 } else if (id <= 99) {
-                    return (prefix + "000" + "" + Long.toString(id));
+                    return (prefix + "00" + "" + id);
                 } else if (id <= 999) {
-                    return (prefix + "00" + "" + Long.toString(id));
+                    return (prefix + "0" + "" + id);
                 } else if (id <= 9999) {
-                    return (prefix + "0" + "" + Long.toString(id));
-                } else if (id <= 99999) {
-                    return (prefix + "" + "" + Long.toString(id));
+                    return (prefix + "" + "" + id);
                 }
             } else {
-                return (prefix + "0000" + "" + "1");
+                return (prefix + "000" + "" + "1");
             }
         } catch (Exception e) {
-            return (prefix + "0000" + "" + "1");
+            return (prefix + "000" + "" + "1");
         }
         return null;
     }

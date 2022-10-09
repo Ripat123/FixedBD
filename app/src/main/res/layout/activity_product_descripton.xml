@@ -179,7 +179,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:fontFamily="@font/rubik_bold"
+                android:fontFamily="@font/poppins_semibold"
                 android:textColor="@color/main_color"
                 app:layout_constraintEnd_toEndOf="@+id/pro_sliderid"
                 app:layout_constraintStart_toStartOf="@+id/pro_name"
@@ -190,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:fontFamily="@font/rubik_bold"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="1500"
                 android:textColor="@color/main_color"
                 app:layout_constraintEnd_toStartOf="@+id/pro_dis_price"
@@ -203,7 +203,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:fontFamily="@font/rubik"
+                android:fontFamily="@font/roboto"
                 android:text="1500"
                 android:textColor="@color/main_color"
                 app:layout_constraintBottom_toBottomOf="@+id/pro_price"
@@ -217,7 +217,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/roboto_medium"
                 android:text="@string/mini_quant"
                 app:layout_constraintStart_toStartOf="@+id/pro_price"
                 app:layout_constraintTop_toBottomOf="@+id/pro_price" />
@@ -227,7 +227,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/roboto_medium"
                 android:text="1"
                 app:layout_constraintBottom_toBottomOf="@+id/min_txt_quant"
                 app:layout_constraintEnd_toEndOf="@+id/pro_dis_price"
@@ -309,7 +309,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/pro_desc_card"
+                app:layout_constraintBottom_toTopOf="@+id/call"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/color_lay">
 
@@ -369,15 +369,67 @@
                     app:layout_constraintTop_toTopOf="@+id/quant_num_card" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/quant"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/call_icon"
+                        style="@style/Widget.Material3.CardView.Filled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        app:cardCornerRadius="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:src="@drawable/ic_round_call_24" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/call_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="@string/app_name"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.15"
+                        app:layout_constraintStart_toEndOf="@+id/call_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/pro_desc_card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/pro_sliderid"
+                app:layout_constraintEnd_toEndOf="@+id/call"
                 app:layout_constraintStart_toStartOf="@+id/min_txt_quant"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+                app:layout_constraintTop_toBottomOf="@+id/call">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -434,7 +486,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/rubik_bold"
+                        android:fontFamily="@font/roboto_medium"
                         android:text="@string/releted_t"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

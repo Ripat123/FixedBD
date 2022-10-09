@@ -245,4 +245,6 @@
     <string name="order_without_pay">Click to order without advance payment</string>
     <string name="paid">Total Paid :</string>
     <string name="due">Total Due :</string>
+    <string name="bank">Bank</string>
+    <string name="other_acc">Other Account</string>
 </resources>
