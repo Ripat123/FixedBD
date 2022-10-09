@@ -110,28 +110,21 @@ public class admin extends AppCompatActivity {
         try {
             String sql = "SELECT id FROM guest WHERE phone = '" + phone + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                    response -> {
 
-                            if (!response.equals("")) {
-                                Toast.makeText(context, "Phone already taken", Toast.LENGTH_LONG).show();
-                                progressDialog.dismiss();
-                            } else {
-                                insertuserData(context, firstname, phone, email, password, address, progressDialog);
-                            }
+                        if (!response.equals("")) {
+                            Toast.makeText(context, "Phone already taken", Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                        } else {
+                            insertuserData(context, firstname, phone, email, password, address, progressDialog);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -151,29 +144,23 @@ public class admin extends AppCompatActivity {
         try {
             homeViewModel = new HomeViewModel();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_GUEST_REG,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (!response.equals("Could not Registered in online") && !response.equals("")) {
-                                homeViewModel.insertuser(context, firstname, phone, email, password, response);
-                                Toast.makeText(context, "Successful", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(admin.this, MainActivity.class));
-                            } else {
-                                Toast.makeText(context, "Failed to Sign up", Toast.LENGTH_LONG).show();
-                            }
+                    response -> {
+                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        if (!response.equals("Could not Registered in online") && !response.equals("")) {
+                            homeViewModel.insertuser(context, firstname, phone, email, password, response);
+                            Toast.makeText(context, "Successful", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(admin.this, MainActivity.class));
+                        } else {
+                            Toast.makeText(context, "Failed to Sign up", Toast.LENGTH_LONG).show();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.FIRST_N, firstname);
                     params.put(config.LAST_N, "");
                     params.put(config.EMAIL, email);

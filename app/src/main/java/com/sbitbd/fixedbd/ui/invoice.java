@@ -178,11 +178,12 @@ public class invoice extends AppCompatActivity {
                             JSONObject collegeData = result.getJSONObject(0);
                             payment.setText(collegeData.getString(config.THREE));
                             order_date.setText(collegeData.getString(config.TWO));
-                            gr_total.setText(collegeData.getString(config.ONE));
+                            gr_total.setText(String.valueOf(Double.parseDouble(collegeData.getString(config.ONE)) +
+                                    Double.parseDouble(collegeData.getString(config.FOUR))));
                             paid.setText(collegeData.getString(config.FOUR));
-                            double due_ = Double.parseDouble(collegeData.getString(config.ONE)) -
-                                    Double.parseDouble(collegeData.getString(config.FOUR));
-                            due.setText(String.valueOf(due_));
+//                            double due_ = Double.parseDouble(collegeData.getString(config.ONE)) -
+//                                    Double.parseDouble(collegeData.getString(config.FOUR));
+                            due.setText(collegeData.getString(config.ONE));
                         }catch (Exception e){
                         }
                     }, error -> Toast.makeText(invoice.this, error.toString(), Toast.LENGTH_LONG).show()) {

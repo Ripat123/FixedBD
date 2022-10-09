@@ -132,7 +132,6 @@ public class DoConfig {
             String sql = query;
             StringRequest stringRequest = new StringRequest(Request.Method.POST, ORDER_DATA,
                     response -> {
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                         if (!response.equals("1") && !response.equals("")) {
                             showOrderJson(response, recyclerView, context);
                         } else
@@ -143,7 +142,7 @@ public class DoConfig {
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(QUERY, sql);
                     return params;
                 }
