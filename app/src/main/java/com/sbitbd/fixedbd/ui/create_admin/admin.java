@@ -86,9 +86,9 @@ public class admin extends AppCompatActivity {
                 Toast.makeText(admin.this, "Empty Password", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (password.getText().toString().length() < 8) {
-                password.setError("Password must be >= 8 character");
-                Toast.makeText(admin.this, "Password must be >= 8 character", Toast.LENGTH_SHORT).show();
+            if (password.getText().toString().length() < 4) {
+                password.setError("Password must be >= 4 character");
+                Toast.makeText(admin.this, "Password must be >= 4 character", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!password.getText().toString().equals(confirm_pass.getText().toString())) {

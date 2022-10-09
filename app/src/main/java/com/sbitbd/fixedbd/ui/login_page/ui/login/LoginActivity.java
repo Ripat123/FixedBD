@@ -131,18 +131,10 @@ public class LoginActivity extends AppCompatActivity {
                 dialogBuilder.show();
             }
         });
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, admin.class));
-            }
-        });
-        otp_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                send(LoginActivity.this, usernameEditText.getText().toString().trim());
-                otp = 1;
-            }
+        signup.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, admin.class)));
+        otp_send.setOnClickListener(v -> {
+            send(LoginActivity.this, usernameEditText.getText().toString().trim());
+            otp = 1;
         });
 
         otp_login.setOnClickListener(new View.OnClickListener() {
@@ -247,41 +239,34 @@ public class LoginActivity extends AppCompatActivity {
         try {
             progressDialog = ProgressDialog.show(context, "", "Sending...", false, false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.OTP_SEND,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (response.trim().equals("1")) {
-                                Toast.makeText(context, "OTP not sent", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "OTP sent successful, Please wait for a moment.", Toast.LENGTH_SHORT).show();
-                                timer.setVisibility(View.VISIBLE);
-                                otp_send.setEnabled(false);
-                                new CountDownTimer(60000, 1000) {
+                    response -> {
+                        progressDialog.dismiss();
+                        if (response.trim().equals("1")) {
+                            Toast.makeText(context, "OTP not sent", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "OTP sent successful, Please wait for a moment.", Toast.LENGTH_SHORT).show();
+                            timer.setVisibility(View.VISIBLE);
+                            otp_send.setEnabled(false);
+                            new CountDownTimer(60000, 1000) {
 
-                                    public void onTick(long millisUntilFinished) {
-                                        timer.setText("Resend OTP: " + millisUntilFinished / 1000 + " seconds");
-                                    }
+                                public void onTick(long millisUntilFinished) {
+                                    timer.setText("Resend OTP: " + millisUntilFinished / 1000 + " seconds");
+                                }
 
-                                    public void onFinish() {
-                                        timer.setVisibility(View.GONE);
-                                        otp_send.setEnabled(true);
-                                    }
+                                public void onFinish() {
+                                    timer.setVisibility(View.GONE);
+                                    otp_send.setEnabled(true);
+                                }
 
-                                }.start();
-                            }
+                            }.start();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.PHONE, phone);
                     params.put(config.CAT_ID, "");
                     return params;
@@ -302,26 +287,19 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog = ProgressDialog.show(context, "", "Loading", false, false);
             String sql = "SELECT id FROM `guest` WHERE phone = '" + username + "' AND code = '" + otp + "'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (!response.trim().equals("")) {
-                                homeViewModel.insertuser(context, "", username, "", "", response.trim());
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finish();
-                            } else {
-                                login(username,otp);
-                            }
+                    response -> {
+                        progressDialog.dismiss();
+                        if (!response.trim().equals("")) {
+                            homeViewModel.insertuser(context, "", username, "", "", response.trim());
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            login(username,otp);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -348,24 +326,17 @@ public class LoginActivity extends AppCompatActivity {
 //            String en_pass = config.encrypt(password);
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.LOGIN,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (response != null && !response.trim().equals("1") && !response.trim().equals("{\"result\":[]}")) {
-                                showJson(response);
-                            } else {
-                                Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
-                            }
-                            loadingProgressBar.setVisibility(View.GONE);
+                    response -> {
+                        if (response != null && !response.trim().equals("1") && !response.trim().equals("{\"result\":[]}")) {
+                            showJson(response);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_LONG).show();
-                    loadingProgressBar.setVisibility(View.GONE);
-                }
-            }) {
+                        loadingProgressBar.setVisibility(View.GONE);
+                    }, error -> {
+                        Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        loadingProgressBar.setVisibility(View.GONE);
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -414,28 +385,21 @@ public class LoginActivity extends AppCompatActivity {
         try {
             progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading...", false, false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.FORGET,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            if (!response.equals("1")) {
-                                Intent intent = new Intent(LoginActivity.this, forget_code.class);
-                                intent.putExtra("phone", phone);
-                                startActivity(intent);
-                            } else
-                                Toast.makeText(LoginActivity.this, "Invalid Phone", Toast.LENGTH_LONG).show();
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    response -> {
+                        progressDialog.dismiss();
+                        if (!response.equals("1")) {
+                            Intent intent = new Intent(LoginActivity.this, forget_code.class);
+                            intent.putExtra("phone", phone);
+                            startActivity(intent);
+                        } else
+                            Toast.makeText(LoginActivity.this, "Invalid Phone", Toast.LENGTH_LONG).show();
+                    }, error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put("phone", phone);
                     return params;
                 }

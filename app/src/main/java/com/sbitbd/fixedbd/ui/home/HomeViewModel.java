@@ -437,23 +437,14 @@ public class HomeViewModel extends ViewModel {
         try {
             String sql="SELECT DATE_FORMAT(NOW(), '%y%m%d%h%m%s') AS 'id'";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.GET_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if(!response.equals("1")) {
-                                session(context,response);
-                            }
+                    response -> {
+                        if(!response.equals("1")) {
+                            session(context,response);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put(config.QUERY, sql);
                     return params;
                 }
@@ -533,20 +524,11 @@ public class HomeViewModel extends ViewModel {
     public void initProduct(Context context, String sql, pro_model pro_model, product_adapter product_adapter){
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, config.PRO_DATA,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if(!response.equals("1")) {
-                                showshortProJSON(response, pro_model, product_adapter, context);
-                            }
+                    response -> {
+                        if(!response.equals("1")) {
+                            showshortProJSON(response, pro_model, product_adapter, context);
                         }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            }) {
+                    }, error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();

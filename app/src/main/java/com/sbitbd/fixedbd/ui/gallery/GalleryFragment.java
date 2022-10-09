@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,6 +104,7 @@ public class GalleryFragment extends Fragment {
                         "`shopping_carts`.`session_id` INNER JOIN `product_productinfo` ON `shopping_carts`.`product_id` = " +
                         "`product_productinfo`.`id` WHERE `invoices`.`guest_id` = '1' AND `invoices`.`session_id` LIKE '" + deviceUniqueIdentifier + "%'";
                 config.OrderData(root.getContext().getApplicationContext(), sql1, order_rec, notfound_id);
+                Log.d("ttt",sql1);
                 //config.online_gid(root.getContext().getApplicationContext(),deviceUniqueIdentifier,order_rec,notfound_id);
             }else {
                 order_sign.setVisibility(View.GONE);

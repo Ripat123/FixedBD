@@ -2,6 +2,7 @@ package com.sbitbd.fixedbd.Config;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -131,6 +132,7 @@ public class DoConfig {
             String sql = query;
             StringRequest stringRequest = new StringRequest(Request.Method.POST, ORDER_DATA,
                     response -> {
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                         if (!response.equals("1") && !response.equals("")) {
                             showOrderJson(response, recyclerView, context);
                         } else
