@@ -1,8 +1,10 @@
 package com.sbitbd.fixedbd.ui.home;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -462,10 +464,11 @@ public class HomeViewModel extends ViewModel {
     public void session(Context context,String dbdate){
         sqliteDB sqlite_db = new sqliteDB(context);
         try {
-            SimpleDateFormat currentDate = new SimpleDateFormat("yyyyMMdd");
-            Date todayDate = new Date();
-            String thisDate = currentDate.format(todayDate);
-            session = dbdate + "-" +thisDate+ System.currentTimeMillis();
+            @SuppressLint("HardwareIds") String deviceUniqueIdentifier = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//            SimpleDateFormat currentDate = new SimpleDateFormat("yyyyMMdd");
+//            Date todayDate = new Date();
+//            String thisDate = currentDate.format(todayDate);
+            session = deviceUniqueIdentifier + "-" +dbdate+ System.currentTimeMillis();
             ContentValues contentValues = new ContentValues();
             contentValues.put("id","1");
             contentValues.put("session_data",session);
