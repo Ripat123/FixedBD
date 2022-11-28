@@ -7,54 +7,54 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.sbitbd.fixedbd.ui.home.HomeFragment"
+        android:name="com.sbitbd.fixed_bd.ui.home.HomeFragment"
         android:label="@string/fragment_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.sbitbd.fixedbd.ui.gallery.GalleryFragment"
+        android:name="com.sbitbd.fixed_bd.ui.gallery.GalleryFragment"
         android:label="@string/menu_track_order"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.sbitbd.fixedbd.ui.slideshow.SlideshowFragment"
+        android:name="com.sbitbd.fixed_bd.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_product"
-        android:name="com.sbitbd.fixedbd.ui.new_product.new_pro"
+        android:name="com.sbitbd.fixed_bd.ui.new_product.new_pro"
         android:label="@string/new_pro"
         tools:layout="@layout/new_pro_fragment" />
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.sbitbd.fixedbd.ui.about.about"
+        android:name="com.sbitbd.fixed_bd.ui.about.about"
         android:label="@string/menu_about"
         tools:layout="@layout/about_fragment" />
     <fragment
         android:id="@+id/nav_contact"
-        android:name="com.sbitbd.fixedbd.ui.contact.contact"
+        android:name="com.sbitbd.fixed_bd.ui.contact.contact"
         android:label="@string/menu_contact"
         tools:layout="@layout/contact_fragment" />
 
     <fragment
         android:id="@+id/nav_sreg"
-        android:name="com.sbitbd.fixedbd.ui.seller_reg.seller_reg"
+        android:name="com.sbitbd.fixed_bd.ui.seller_reg.seller_reg"
         android:label="@string/s_reg" />
     <fragment
         android:id="@+id/nav_developer"
-        android:name="com.sbitbd.fixedbd.ui.developer.developer_page"
+        android:name="com.sbitbd.fixed_bd.ui.developer.developer_page"
         android:label="@string/dev"
         tools:layout="@layout/fragment_developer_page" />
     <fragment
         android:id="@+id/nav_terms_cond"
-        android:name="com.sbitbd.fixedbd.terms_cond"
+        android:name="com.sbitbd.fixed_bd.terms_cond"
         android:label="@string/terms"
         tools:layout="@layout/fragment_terms_cond" />
     <fragment
         android:id="@+id/nav_faq"
-        android:name="com.sbitbd.fixedbd.ui.faq.faq"
+        android:name="com.sbitbd.fixed_bd.ui.faq.faq"
         android:label="@string/faq"
         tools:layout="@layout/fragment_faq" />
 </navigation>
